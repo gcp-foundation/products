@@ -10,13 +10,13 @@ locals {
 }
 
 module "organization" {
-  source = "github.com//gcp-foundation.com/modules//resources/organization?ref=0.0.1"
+  source = "github.com/gcp-foundation.com/modules//resources/organization?ref=0.0.1"
 
   domain = local.organization.domain
 }
 
 module "folders" {
-  source   = "github.com://gcp-foundation/modules//resources/folder?ref=0.0.1"
+  source   = "github.com/gcp-foundation/modules//resources/folder?ref=0.0.1"
   for_each = { for folder in local.organization.folders : folder.display_name => folder }
 
   display_name = each.value.display_name
@@ -24,7 +24,7 @@ module "folders" {
 }
 
 module "projects" {
-  source   = "github.com://gcp-foundation/modules//resources/folder?ref=0.0.1"
+  source   = "github.com/gcp-foundation/modules//resources/folder?ref=0.0.1"
   for_each = { for project in local.projects : "${project.folder.display_name}/${project.project.name}" => project }
 
   name            = each.value.project.name
