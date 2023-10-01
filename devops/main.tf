@@ -1,6 +1,10 @@
 locals {
 
-  organization = yamldecode(templatefile("${path.module}/foundation.yaml", var.environment))
+  environment = {
+    domain = var.domain
+  }
+
+  organization = yamldecode(templatefile("${path.module}/foundation.yaml", local.environment))
 
   projects = flatten([
     for folder in local.organization.folders : [
@@ -24,13 +28,13 @@ module "folders" {
 }
 
 module "projects" {
-  source   = "github.com/gcp-foundation/modules//resources/folder?ref=0.0.1"
+  source   = "github.com/gcp-foundation/modules//resources/project?ref=0.0.1"
   for_each = { for project in local.projects : "${project.folder.display_name}/${project.project.name}" => project }
 
   name            = each.value.project.name
   folder          = module.folders[each.value.folder.display_name].name
   services        = each.value.project.services
-  billing_account = var.environment.billing_account
+  billing_account = var.billing_account
   labels          = var.labels
 }
 
