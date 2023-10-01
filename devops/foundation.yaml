@@ -1,0 +1,17 @@
+domain: ${domain}
+folders:
+- display_name : devops
+  projects:
+  - name: control
+    services: []
+  - name: pipelines
+    services: []
+- display_name: management
+  projects:
+  - name: logging
+    services: []
+  - name: billing
+    services: []
+  - name: guardrails
+    services: []
+  
