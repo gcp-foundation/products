@@ -10,7 +10,7 @@ locals {
 }
 
 module "organization" {
-  source = "github.com/gcp-foundation.com/modules//resources/organization?ref=0.0.1"
+  source = "github.com/gcp-foundation/modules//resources/organization?ref=0.0.1"
 
   domain = local.organization.domain
 }
