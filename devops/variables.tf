@@ -1,8 +1,11 @@
 variable "domain" {
   description = "The domain to bootstrap"
-    domain          = "latest.gcp-foundation.com"
-    billing_account = "01EBA6-74BB59-078C79"
-  }
+  type        = string
+}
+
+variable "billing_account" {
+  description = "The billing account to use for all resources"
+  type        = string
 }
 
 variable "labels" {
