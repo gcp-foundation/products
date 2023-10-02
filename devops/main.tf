@@ -64,10 +64,10 @@ module "kms_key" {
 module "artifact_registry" {
   source = "github.com/gcp-foundation/modules//artifact_registry?ref=0.0.1"
 
-  repository_id = "cloudbuild"
-  description   = "Docker containers for cloudbuild"
-  project       = module.projects["devops/control"].id
-  location      = var.location
+  name        = "cloudbuild"
+  description = "Docker containers for cloudbuild"
+  project     = module.projects["devops/control"].id
+  location    = var.location
 
   kms_key_id = module.kms_key.key_id
 }
