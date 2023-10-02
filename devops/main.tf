@@ -40,8 +40,8 @@ module "projects" {
 
 locals {
   services   = ["artifactregistry.googleapis.com", "storage.googleapis.com"]
-  encrypters = [for identity in module.service_identity : module.service_identity.email]
-  decrypters = [for identity in module.service_identity : module.service_identity.email]
+  encrypters = [for identity in module.service_identity : identity.email]
+  decrypters = [for identity in module.service_identity : identity.email]
 }
 
 module "service_identity" {
