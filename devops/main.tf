@@ -44,6 +44,8 @@ module "kms_key" {
   key_ring_name = module.projects["devops/control"].id
   project       = module.projects["devops/control"].id
   location      = var.location
+  encrypters    = []
+  decrypters    = []
 }
 
 /*
