@@ -39,7 +39,7 @@ module "projects" {
 }
 
 module "kms_key" {
-  source        = "github.com/gcp-foundation/modules//resources/kms/key?ref=0.0.1"
+  source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
   name          = module.projects["devops/control"].project_id
   key_ring_name = module.projects["devops/control"].project_id
   project       = module.projects["devops/control"].project_id
