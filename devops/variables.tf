@@ -8,6 +8,11 @@ variable "billing_account" {
   type        = string
 }
 
+variable "location" {
+  description = "The location to deploy resource"
+  type        = string
+}
+
 variable "labels" {
   description = "Labels to apply to all foundation projects"
   type        = map(string)
