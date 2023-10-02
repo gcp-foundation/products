@@ -45,6 +45,7 @@ locals {
 }
 
 module "service_identity" {
+  source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
   for_each = toset(local.services)
   project  = module.projects["devops/control"].id
   service  = each.value
