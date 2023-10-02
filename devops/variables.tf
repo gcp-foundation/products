@@ -9,6 +9,8 @@ variable "billing_account" {
 }
 
 variable "labels" {
+  description = "Labels to apply to all foundation projects"
+  type        = map(string)
   default = {
     environment               = "bootstrap"
     application_name          = "seed-bootstrap"

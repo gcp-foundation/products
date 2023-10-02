@@ -38,4 +38,54 @@ module "projects" {
   labels          = var.labels
 }
 
+module "kms_key" {
+  name          = module.projects["devops/control"].project_id
+  key_ring_name = module.projects["devops/control"].project_id
+  project       = module.projects["devops/control"].project_id
+  location      = var.location
+}
 
+/*
+module "artifact_registry" {
+
+  kms_key = module.kms_key.key
+
+}
+
+resource "google_artifact_registry_repository" "images" {
+  location      = var.location
+  repository_id = "cloudbuild"
+  description   = "Docker repository for cloudbuild images"
+  format        = "DOCKER"
+  kms_key_name  = module.kms.key_id
+  depends_on = [
+    google_kms_crypto_key_iam_member.crypto_key
+  ]
+}
+
+resource "google_kms_crypto_key_iam_member" "crypto_key" {
+  crypto_key_id = "kms-key"
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-artifactregistry.iam.gserviceaccount.com"
+}
+
+module "state_files" {
+  source = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+}
+
+module "build_outputs" {
+  source = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+}
+
+module "service_account" {
+
+}
+
+module "main_trigger" {
+
+}
+
+module "branch_trigger" {
+
+}
+*/
