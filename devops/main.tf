@@ -38,34 +38,40 @@ module "projects" {
   labels          = var.labels
 }
 
+locals {
+  services   = ["artifactregistry.googleapis.com", "storage.googleapis.com"]
+  encrypters = []
+  decrypters = []
+}
+
+module "service_identity" {
+  for_each = toset(local.services)
+  project  = module.projects["devops/control"].id
+  service  = each.value
+}
+
 module "kms_key" {
   source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
   name          = module.projects["devops/control"].id
   key_ring_name = module.projects["devops/control"].id
   project       = module.projects["devops/control"].id
   location      = var.location
-  encrypters    = []
-  decrypters    = []
+  encrypters    = local.encrypters
+  decrypters    = local.decrypters
+}
+
+module "artifact_registry" {
+  source = "github.com/gcp-foundation/modules//artifact_registry?ref=0.0.1"
+
+  repository_id = "cloudbuild"
+  description   = "Docker containers for cloudbuild"
+  project       = module.projects["devops/control"].id
+  location      = var.location
+
+  kms_key_id = module.kms_key.key_id
 }
 
 /*
-module "artifact_registry" {
-
-  kms_key = module.kms_key.key
-
-}
-
-resource "google_artifact_registry_repository" "images" {
-  location      = var.location
-  repository_id = "cloudbuild"
-  description   = "Docker repository for cloudbuild images"
-  format        = "DOCKER"
-  kms_key_name  = module.kms.key_id
-  depends_on = [
-    google_kms_crypto_key_iam_member.crypto_key
-  ]
-}
-
 resource "google_kms_crypto_key_iam_member" "crypto_key" {
   crypto_key_id = "kms-key"
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
