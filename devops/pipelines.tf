@@ -51,6 +51,8 @@ module "pipeline_kms_key" {
   location      = var.location
   encrypters    = local.pipeline_encrypters
   decrypters    = local.pipeline_decrypters
+
+  depends_on = [module.projects["devops/pipelines"].services]
 }
 
 module "artifact_registry" {
@@ -74,7 +76,7 @@ module "build_output" {
   data_classification = "internal"
   kms_key_id          = module.pipeline_kms_key.key_id
 
-  depends_on = [module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters]
+  depends_on = [module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters, module.projects["devops/pipelines"].services]
 }
 
 module "repository" {
@@ -84,7 +86,7 @@ module "repository" {
   name    = each.value
   project = module.projects["devops/pipelines"].project_id
 
-  depends_on = [module.projects["devops/pipelines"]]
+  depends_on = [module.projects["devops/pipelines"].services]
 }
 
 resource "google_cloudbuild_trigger" "plan-trigger" {
