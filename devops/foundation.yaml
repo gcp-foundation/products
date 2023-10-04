@@ -3,9 +3,17 @@ folders:
 - display_name : devops
   projects:
   - name: control
-    services: []
+    services: 
+    - cloudkms.googleapis.com
+    - storage.googleapis.com
   - name: pipelines
-    services: []
+    services:       
+    - serviceusage.googleapis.com
+    - cloudkms.googleapis.com
+    - storage.googleapis.com
+    - artifactregistry.googleapis.com
+    - sourcerepo.googleapis.com
+    - cloudbuild.googleapis.com
 - display_name: management
   projects:
   - name: logging
