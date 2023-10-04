@@ -4,16 +4,24 @@ folders:
   projects:
   - name: control
     services: 
-    - cloudkms.googleapis.com
-    - storage.googleapis.com
+    # - compute.googleapis.com            # - Enabled by google
+    # - oslogin.googleapis.com            # - Enabled by google
+    - cloudkms.googleapis.com             # - For CMEK keys
+    - storage.googleapis.com              # - For storage buckets (terraform state)
   - name: pipelines
     services:       
-    - serviceusage.googleapis.com
-    - cloudkms.googleapis.com
-    - storage.googleapis.com
-    - artifactregistry.googleapis.com
-    - sourcerepo.googleapis.com
-    - cloudbuild.googleapis.com
+    # - compute.googleapis.com            # - Enabled by google
+    # - oslogin.googleapis.com            # - Enabled by google
+    - serviceusage.googleapis.com         # - For enabling services 
+    - cloudkms.googleapis.com             # - For CMEK keys
+    - storage.googleapis.com              # - For storage buckets (cloudbuild outputs)
+    - artifactregistry.googleapis.com     # - For docker images
+    - sourcerepo.googleapis.com           # - For cloud source repositories
+    - cloudbuild.googleapis.com           # - For cloud build triggers
+    # - logging.googleapis.com            # - Enabled by google - dependency on cloudbuild
+    # - pubsub.googleapis.com             # - Enabled by google - dependency on source repos
+    # - containterregistry.googleapis.com # - Enabled by google - dependency on cloudbuild?
+    # - storage-api.googleapis.com        # - Enabled by google - dependency on cloudbuild?
 - display_name: management
   projects:
   - name: logging

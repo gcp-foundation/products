@@ -42,6 +42,8 @@ module "state_files" {
   location            = var.location
   data_classification = "terraform_state"
   kms_key_id          = module.control_kms_key.key_id
+
+  depends_on = [module.control_kms_key.encrypters, module.control_kms_key.decrypters]
 }
 
 module "service_account" {
