@@ -1,7 +1,7 @@
 locals {
-  control_services   = []
-  control_encrypters = concat([for identity in module.control_service_identity : "serviceAccount:${identity.email}"], ["serviceAccount:${data.google_storage_project_service_account.control_gcs_account.email_address}"])
-  control_decrypters = concat([for identity in module.control_service_identity : "serviceAccount:${identity.email}"], ["serviceAccount:${data.google_storage_project_service_account.control_gcs_account.email_address}"])
+  control_services         = []
+  other_control_encrypters = ["serviceAccount:${data.google_storage_project_service_account.control_gcs_account.email_address}"]
+  control_encrypters       = concat([for identity in module.control_service_identity : "serviceAccount:${identity.email}"], local.other_control_encrypters)
 }
 
 module "control_service_identity" {
@@ -23,6 +23,8 @@ resource "google_project_organization_policy" "iam_disableCrossProjectServiceAcc
 
 data "google_storage_project_service_account" "control_gcs_account" {
   project = module.projects["devops/control"].project_id
+
+  depends_on = [module.projects["devops/control"]]
 }
 
 module "control_kms_key" {
@@ -32,7 +34,7 @@ module "control_kms_key" {
   project       = module.projects["devops/control"].project_id
   location      = var.location
   encrypters    = local.control_encrypters
-  decrypters    = local.control_decrypters
+  decrypters    = local.control_encrypters
 }
 
 module "state_files" {

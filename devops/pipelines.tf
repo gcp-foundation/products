@@ -1,10 +1,21 @@
 locals {
-  pipeline_services   = ["artifactregistry.googleapis.com"]
-  pipeline_encrypters = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], ["serviceAccount:${data.google_storage_project_service_account.pipeline_gcs_account.email_address}"])
-  pipeline_decrypters = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], ["serviceAccount:${data.google_storage_project_service_account.pipeline_gcs_account.email_address}"])
-  repositories        = ["devops", "management"]
-  cloudbuild_image    = "$_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform@sha256"
-  cloudbuild_sha      = "123"
+  pipeline_services         = ["artifactregistry.googleapis.com"]
+  other_pipeline_encrypters = ["serviceAccount:${data.google_storage_project_service_account.pipeline_gcs_account.email_address}"]
+  pipeline_encrypters       = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], local.other_pipeline_encrypters)
+
+  repositories     = ["devops", "management"]
+  cloudbuild_image = "$_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform@sha256"
+  cloudbuild_sha   = "123"
+  pipelines = {
+    devops = {
+      repo            = "devops"
+      service_account = "devops"
+    }
+    management = {
+      repo            = "management"
+      service_account = "management"
+    }
+  }
   service_accounts = {
     devops : {
       name : "devops"
@@ -18,16 +29,6 @@ locals {
     }
   }
 
-  pipelines = {
-    devops = {
-      repo            = "devops"
-      service_account = "devops"
-    }
-    management = {
-      repo            = "management"
-      service_account = "management"
-    }
-  }
 }
 
 module "pipeline_service_identity" {
@@ -41,6 +42,8 @@ module "pipeline_service_identity" {
 
 data "google_storage_project_service_account" "pipeline_gcs_account" {
   project = module.projects["devops/pipelines"].project_id
+
+  depends_on = [module.projects["devops/pipelines"].services]
 }
 
 module "pipeline_kms_key" {
@@ -50,7 +53,7 @@ module "pipeline_kms_key" {
   project       = module.projects["devops/pipelines"].project_id
   location      = var.location
   encrypters    = local.pipeline_encrypters
-  decrypters    = local.pipeline_decrypters
+  decrypters    = local.pipeline_encrypters
 
   depends_on = [module.projects["devops/pipelines"].services]
 }
@@ -137,6 +140,8 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
       }
     }
   }
+
+  depends_on = [google_service_account_iam_member.sa_cloudbuild_token_creator]
 }
 
 resource "google_cloudbuild_trigger" "apply-trigger" {
@@ -186,5 +191,6 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
       }
     }
   }
-}
 
+  depends_on = [google_service_account_iam_member.sa_cloudbuild_token_creator]
+}
