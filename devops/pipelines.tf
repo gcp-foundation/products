@@ -4,8 +4,8 @@ locals {
   pipeline_encrypters       = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], local.other_pipeline_encrypters)
 
   gar_name         = "cloudbuild"
-  cloudbuild_image = "$_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform@sha256"
-  cloudbuild_sha   = "123"
+  cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects["devops/pipelines"].project_id}/terraform@sha256"
+  cloudbuild_sha   = "87ae23caeba0dab16329e88b40ad828d6f8d9fa110a324e5c9f69bfc6c43c37f"
 
   repositories = ["devops", "management"]
   pipelines = {
@@ -180,9 +180,34 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
   name        = "${each.key}-terraform-apply"
   description = "Terraform plan for ${each.key}"
 
-  trigger_template {
-    branch_name = "main"
-    repo_name   = module.repository[each.value.repo].name
+  # trigger_template {
+  #   branch_name = "main"
+  #   repo_name   = module.repository[each.value.repo].name
+  # }
+
+  dynamic "github" {
+    content {
+      owner = github.value.owner
+      name  = github.value.name
+
+      dynamic "pull_request" {
+        for_each = github.value.is_pr_trigger ? { (github.key) = github.value } : {}
+        content {
+          branch          = pull_request.value.branch_regex
+          comment_control = pull_request.value.comment_control
+          invert_regex    = var.invert_regex
+        }
+      }
+
+      dynamic "push" {
+        for_each = github.value.is_pr_trigger ? {} : { (github.key) = github.value }
+        content {
+          branch       = push.value.branch_regex
+          tag          = push.value.tag_regex
+          invert_regex = var.invert_regex
+        }
+      }
+    }
   }
 
   service_account = module.service_account[each.value.service_account].id
