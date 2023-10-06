@@ -4,7 +4,7 @@ locals {
   pipeline_encrypters       = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], local.other_pipeline_encrypters)
 
   gar_name         = "cloudbuild"
-  cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects["devops/pipelines"].project_id}/terraform@sha256"
+  cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects["devops/pipelines"].project_id}/${local.gar_name}/terraform@sha256"
   cloudbuild_sha   = "87ae23caeba0dab16329e88b40ad828d6f8d9fa110a324e5c9f69bfc6c43c37f"
 
   repositories = ["devops", "management"]
