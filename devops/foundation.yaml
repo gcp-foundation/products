@@ -83,6 +83,7 @@ folders:
     - pubsub.googleapis.com               # - Enabled by google - dependency on source repos
 #    - containterregistry.googleapis.com  # - Enabled by google - dependency on cloudbuild?
     - storage-api.googleapis.com          # - Enabled by google - dependency on cloudbuild?
+    - iam.googleapis.com                  # - Required for pipelines?
 - displayName: management
   projects:
   - displayName: logging
