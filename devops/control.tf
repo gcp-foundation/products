@@ -35,6 +35,8 @@ module "control_kms_key" {
   location      = var.location
   encrypters    = local.control_encrypters
   decrypters    = local.control_encrypters
+
+  depends_on = [module.projects["devops/control"].services]
 }
 
 module "state_files" {

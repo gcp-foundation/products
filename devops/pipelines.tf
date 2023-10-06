@@ -3,9 +3,11 @@ locals {
   other_pipeline_encrypters = ["serviceAccount:${data.google_storage_project_service_account.pipeline_gcs_account.email_address}"]
   pipeline_encrypters       = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], local.other_pipeline_encrypters)
 
-  repositories     = ["devops", "management"]
+  gar_name         = "cloudbuild"
   cloudbuild_image = "$_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform@sha256"
   cloudbuild_sha   = "123"
+
+  repositories = ["devops", "management"]
   pipelines = {
     devops = {
       repo            = "devops"
@@ -16,6 +18,7 @@ locals {
       service_account = "management"
     }
   }
+
   service_accounts = {
     devops : {
       name : "devops"
@@ -28,7 +31,6 @@ locals {
       description : "Service Account for the management pipeline"
     }
   }
-
 }
 
 module "pipeline_service_identity" {
@@ -61,7 +63,7 @@ module "pipeline_kms_key" {
 module "artifact_registry" {
   source = "github.com/gcp-foundation/modules//devops/artifact_registry?ref=0.0.1"
 
-  name        = "cloudbuild"
+  name        = local.gar_name
   description = "Docker containers for cloudbuild"
   project     = module.projects["devops/pipelines"].project_id
   location    = var.location
@@ -69,6 +71,30 @@ module "artifact_registry" {
   kms_key_id = module.pipeline_kms_key.key_id
 
   depends_on = [module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters, module.projects["devops/pipelines"].services]
+}
+
+locals {
+  terraform_version_sha256sum = "c0ed7bc32ee52ae255af9982c8c88a7a4c610485cf1d55feeb037eab75fa082c"
+  terraform_version           = "1.5.7"
+  gcloud_version              = "388.0.0-slim"
+}
+
+resource "null_resource" "cloudbuild_terraform_builder" {
+  triggers = {
+    project_id                  = module.projects["devops/pipelines"].project_id
+    terraform_version_sha256sum = local.terraform_version_sha256sum
+    terraform_version           = local.terraform_version
+    gar_name                    = local.gar_name
+    gar_location                = module.artifact_registry.location
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+    gcloud builds submit ${path.module}/cloudbuild_builder/ --project ${module.projects["devops/pipelines"].project_id} --config=${path.module}/cloudbuild_builder/cloudbuild.yaml --substitutions=_GCLOUD_VERSION=${local.gcloud_version},_TERRAFORM_VERSION=${local.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${local.terraform_version_sha256sum},_REGION=${module.artifact_registry.location},_REPOSITORY=${local.gar_name}
+  EOT
+  }
+
+  depends_on = [module.artifact_registry]
 }
 
 module "build_output" {

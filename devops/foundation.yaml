@@ -1,14 +1,75 @@
-domain: ${domain}
+displayName: latest.gcp-foundation.com      
+orgPolicies:                                
+- name: compute.disableNestedVirtualization
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.disableSerialPortAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.disableGuestAttributesAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.skipDefaultNetworkCreation
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.restrictXpnProjectLienRemoval
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.disableVpcExternalIpv6
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.setNewProjectDefaultToZonalDNSOnly
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.requireOsLogin
+  spec:                                     
+    rules:
+    - enforce: true
+- name: sql.restrictPublicIp
+  spec:                                     
+    rules:
+    - enforce: true
+- name: sql.restrictAuthorizedNetworks
+  spec:                                     
+    rules:
+    - enforce: true
+- name: iam.disableServiceAccountKeyCreation
+  spec:                                     
+    rules:
+    - enforce: true
+- name: iam.automaticIamGrantsForDefaultServiceAccounts
+  spec:                                     
+    rules:
+    - enforce: true
+- name: iam.disableServiceAccountKeyUpload
+  spec:                                     
+    rules:
+    - enforce: true
+- name: storage.uniformBucketLevelAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: storage.publicAccessPrevention
+  spec:                                     
+    rules:
+    - enforce: true
 folders:
-- display_name : devops
+- displayName : devops
   projects:
-  - name: control
+  - displayName: control
     services: 
     - cloudkms.googleapis.com             # - For CMEK keys
     - storage.googleapis.com              # - For storage buckets (terraform state)
-    # - compute.googleapis.com            # - Enabled by google
-    # - oslogin.googleapis.com            # - Enabled by google
-  - name: pipelines
+    - compute.googleapis.com              # - Enabled by google
+    - oslogin.googleapis.com              # - Enabled by google
+  - displayName: pipelines
     services:       
     - serviceusage.googleapis.com         # - For enabling services 
     - cloudkms.googleapis.com             # - For CMEK keys
@@ -16,18 +77,23 @@ folders:
     - artifactregistry.googleapis.com     # - For docker images
     - sourcerepo.googleapis.com           # - For cloud source repositories
     - cloudbuild.googleapis.com           # - For cloud build triggers
-    # - compute.googleapis.com            # - Enabled by google
-    # - oslogin.googleapis.com            # - Enabled by google
-    # - logging.googleapis.com            # - Enabled by google - dependency on cloudbuild
-    # - pubsub.googleapis.com             # - Enabled by google - dependency on source repos
-    # - containterregistry.googleapis.com # - Enabled by google - dependency on cloudbuild?
-    # - storage-api.googleapis.com        # - Enabled by google - dependency on cloudbuild?
-- display_name: management
+    - compute.googleapis.com              # - Enabled by google
+    - oslogin.googleapis.com              # - Enabled by google
+    - logging.googleapis.com              # - Enabled by google - dependency on cloudbuild
+    - pubsub.googleapis.com               # - Enabled by google - dependency on source repos
+#    - containterregistry.googleapis.com  # - Enabled by google - dependency on cloudbuild?
+    - storage-api.googleapis.com          # - Enabled by google - dependency on cloudbuild?
+- displayName: management
   projects:
-  - name: logging
-    services: []
-  - name: billing
-    services: []
-  - name: guardrails
-    services: []
-  
+  - displayName: logging
+    services: 
+    - compute.googleapis.com              # - Enabled by google
+    - oslogin.googleapis.com              # - Enabled by google
+  - displayName: billing
+    services: 
+    - compute.googleapis.com              # - Enabled by google
+    - oslogin.googleapis.com              # - Enabled by google
+  - displayName: guardrails
+    services: 
+    - compute.googleapis.com              # - Enabled by google
+    - oslogin.googleapis.com              # - Enabled by google
