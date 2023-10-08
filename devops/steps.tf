@@ -19,8 +19,8 @@ locals {
         <<-EOT
             echo "Planning Terraform"
             export plan_name=$BRANCH_NAME
-            terraform plan -input=false -out "$${tmp/plan}/$${plan_name}.tfplan" || exit 2 ;
-          EOT
+            terraform plan -input=false  || exit 2 ;
+        EOT
       ]
     }
     apply = {
@@ -31,8 +31,8 @@ locals {
         <<-EOT
             echo "Applying Terraform"
             export plan_name=$BRANCH_NAME
-            terraform apply -input=false -auto-approve "$${tmp/plan}/$${plan_name}.tfplan" || exit 3 ;
-          EOT
+            terraform apply -input=false -auto-approve || exit 3 ;
+        EOT
       ]
     }
   }
