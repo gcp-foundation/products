@@ -43,3 +43,11 @@ locals {
     for project in data.google_cloud_asset_resources_search_all.projects.results : project.display_name => project
   }
 }
+
+output "folders" {
+  value = local.folders
+}
+
+output "projects" {
+  value = local.projects
+}
