@@ -1,4 +1,4 @@
-displayName: latest.gcp-foundation.com      
+displayName: ${domain}
 orgPolicy:                                
 - name: compute.disableNestedVirtualization
   spec:                                     
