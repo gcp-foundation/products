@@ -153,5 +153,5 @@ locals {
 module "devops_iam" {
   source = "github.com/gcp-foundation/modules//iam/policy?ref=0.0.1"
 
-  policy = yamldecode(templatefile("${path.module}/policy.yaml", local.devops_env))
+  policy = yamldecode(templatefile("${path.module}/devops_policy.yaml", local.devops_env))
 }
