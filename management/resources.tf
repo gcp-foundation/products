@@ -21,6 +21,7 @@ data "google_cloud_asset_resources_search_all" "folders" {
   asset_types = [
     "cloudresourcemanager.googleapis.com/Folder"
   ]
+  query = "state:ACTIVE"
 }
 
 data "google_cloud_asset_resources_search_all" "projects" {
@@ -30,7 +31,7 @@ data "google_cloud_asset_resources_search_all" "projects" {
   asset_types = [
     "cloudresourcemanager.googleapis.com/Project"
   ]
-  query = "lifecycleState=ACTIVE"
+  query = "state:ACTIVE"
 }
 
 locals {
