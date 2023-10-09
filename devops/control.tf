@@ -147,7 +147,7 @@ locals {
   devops_env = {
     organization_id = module.organization.org_id
     devops_sa       = "serviceAccount:${module.service_account["devops"].email}"
-    mananagement_sa = "serviceAccount:${module.service_account["management"].email}"
+    management_sa   = "serviceAccount:${module.service_account["management"].email}"
   }
 
   devops_policy     = yamldecode(templatefile("${path.module}/devops_policy.yaml", local.devops_env))
