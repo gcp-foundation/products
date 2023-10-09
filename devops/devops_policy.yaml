@@ -2,10 +2,10 @@ organizations:
 - name: organizations/${organization_id}
   iamPolicy:
     bindings:
-    - role: roles/organizationPolicyAdmin
+    - role: roles/orgpolicy.policyAdmin
       members:
       - ${devops_sa}
-    - role: roles/organizationAdmin
+    - role: roles/resourcemanager.organizationAdmin
       members:
       - ${devops_sa}
 folders: []
