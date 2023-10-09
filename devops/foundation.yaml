@@ -69,6 +69,7 @@ folders:
     - storage.googleapis.com              # - For storage buckets (terraform state)
     - cloudresourcemanager.googleapis.com # - Required for running terraform 
     - serviceusage.googleapis.com         # - Required for running terraform 
+    - iam.googleapis.com                  # - Required for running terraform
     - compute.googleapis.com              # - Enabled by google
     - oslogin.googleapis.com              # - Enabled by google
   - displayName: pipelines

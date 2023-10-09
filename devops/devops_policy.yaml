@@ -11,5 +11,8 @@ organizations:
     - role: roles/serviceusage.serviceUsageAdmin
       members:
       - ${devops_sa}
+    - role: roles/cloudkms.admin
+      members:
+      - ${devops_sa}
 folders: []
 projects: []
