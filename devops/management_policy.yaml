@@ -1,0 +1,15 @@
+organizations:
+- name: organizations/${organization_id}
+  iamPolicy:
+    bindings:
+    - role: roles/resourcemanager.organizationViewer
+      members:
+      - ${management_sa}
+    - role: roles/orgpolicy.policyAdmin
+      members:
+      - ${management_sa}
+    - role: roles/cloudkms.admin
+      members:
+      - ${management_sa}
+folders: []
+projects: []
