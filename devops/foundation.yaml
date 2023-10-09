@@ -70,6 +70,7 @@ folders:
     - cloudresourcemanager.googleapis.com # - Required for running terraform 
     - serviceusage.googleapis.com         # - Required for running terraform 
     - iam.googleapis.com                  # - Required for running terraform
+    - cloudbuild.googleapis.com           # - Required for running terraform
     - compute.googleapis.com              # - Enabled by google
     - oslogin.googleapis.com              # - Enabled by google
   - displayName: pipelines
