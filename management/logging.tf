@@ -24,17 +24,15 @@ data "google_storage_project_service_account" "logging_gcs_account" {
   project = local.projects["logging"]
 }
 
-# module "logging_kms_key" {
-#   source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
-#   name          = module.projects["management/logging"].project_id
-#   key_ring_name = module.projects["management/logging"].project_id
-#   project       = module.projects["management/logging"].project_id
-#   location      = var.location
-#   encrypters    = local.logging_encrypters
-#   decrypters    = local.logging_encrypters
-
-#   depends_on = [module.projects["management/logging"].services]
-# }
+module "logging_kms_key" {
+  source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
+  name          = local.projects["logging"]
+  key_ring_name = local.projects["logging"]
+  project       = local.projects["logging"]
+  location      = var.location
+  encrypters    = local.logging_encrypters
+  decrypters    = local.logging_encrypters
+}
 
 # No filter on this log sink ensures all logs are forwarded to the storage bucket
 # module "log_sink_all_to_storage" {
