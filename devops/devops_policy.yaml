@@ -8,5 +8,8 @@ organizations:
     - role: roles/resourcemanager.organizationAdmin
       members:
       - ${devops_sa}
+    - role: roles/serviceusage.serviceUsageAdmin
+      members:
+      - ${devops_sa}
 folders: []
 projects: []
