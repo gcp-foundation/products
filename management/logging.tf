@@ -7,24 +7,22 @@ locals {
     logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
   EOF
 
-  #   logging_services          = ["artifactregistry.googleapis.com"]
-  #   other_pipeline_encrypters = ["serviceAccount:${data.google_storage_project_service_account.pipeline_gcs_account.email_address}"]
-  #   pipeline_encrypters       = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], local.other_pipeline_encrypters)
+  logging_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com", "bigquery.googleapis.com"]
+  other_encrypters = ["serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}"]
+  encrypters       = concat([for identity in module.logging_service_identity : "serviceAccount:${identity.email}"], local.other_encrypters)
 
 }
 
-# module "pipeline_service_identity" {
-#   source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
-#   for_each = toset(local.logging_services)
-#   project  = module.projects["management/logging"].project_id
-#   service  = each.value
-# }
+module "logging_service_identity" {
+  source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
+  for_each = toset(local.logging_services)
+  project  = local.projects["logging"]
+  service  = each.value
+}
 
-# data "google_storage_project_service_account" "pipeline_gcs_account" {
-#   project = module.projects["devops/pipelines"].project_id
-
-#   depends_on = [module.projects["devops/pipelines"].services]
-# }
+data "google_storage_project_service_account" "logging_gcs_account" {
+  project = local.projects["logging"]
+}
 
 # module "logging_kms_key" {
 #   source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
