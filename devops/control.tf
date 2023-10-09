@@ -142,3 +142,16 @@ resource "google_storage_bucket_iam_member" "sa_service_account_billing_admin" {
   member             = "serviceAccount:${module.service_account[each.key].email}"
 }
 */
+
+locals {
+  devops_env = {
+    organization_id = module.organization.organization_id
+    devops_sa       = module.service_account["devops"].email
+  }
+}
+
+module "devops_iam" {
+  source = "github.com/gcp-foundation/modules//iam/policy?ref=0.0.1"
+
+  policy = yamldecode(templatefile("${path.module}/foundation.yaml", local.devops_env))
+}
