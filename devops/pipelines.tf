@@ -161,7 +161,7 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
       artifacts {
         objects {
           location = join("/", ["gs://${module.build_output.name}/terraform/cloudbuild]", "plan", "$BUILD_ID"])
-          paths    = ["tmp_plan/*.tfplan", "tmp_plan/*.tfinit"]
+          paths    = ["*.tfplan", "*.tfinit"]
         }
       }
     }
@@ -237,7 +237,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
       artifacts {
         objects {
           location = join("/", ["gs://${module.build_output.name}/terraform/cloudbuild", "plan", "$BUILD_ID"])
-          paths    = ["tmp_plan/*.tfplan", "tmp_plan/*.tfinit"]
+          paths    = ["*.tfplan", "*.tfinit"]
         }
       }
     }
