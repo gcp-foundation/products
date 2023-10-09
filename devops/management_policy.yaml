@@ -11,5 +11,8 @@ organizations:
     - role: roles/cloudkms.admin
       members:
       - ${management_sa}
+    - role: roles/cloudasset.viewer
+      members:
+      - ${management_sa}
 folders: []
 projects: []
