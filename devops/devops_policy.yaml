@@ -1,0 +1,11 @@
+organizations:
+- name: organizations/${organization_id}
+  iamPolicy:
+    bindings:
+    - role: roles/organizationPolicyAdmin
+      members:
+      - ${devops_sa}
+    - role: roles/organizationAdmin
+      members:
+      - ${devops_sa}
+
