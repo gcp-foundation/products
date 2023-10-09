@@ -145,7 +145,7 @@ resource "google_storage_bucket_iam_member" "sa_service_account_billing_admin" {
 
 locals {
   devops_env = {
-    organization_id = module.organization.organization_id
+    organization_id = module.organization.org_id
     devops_sa       = module.service_account["devops"].email
   }
 }
