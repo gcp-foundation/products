@@ -34,21 +34,23 @@ module "logging_kms_key" {
 }
 
 # No filter on this log sink ensures all logs are forwarded to the storage bucket
-# module "log_sink_all_to_storage" {
-#   source           = "github.com/gcp-foundation/modules//log_sink"
-#   name             = "log_storage"
-#   org_id           = local.organization_id
-#   include_children = true
-#   destination      = "storage.googleapis.com/${module.log_storage.name}"
-# }
+module "log_sink_all_to_storage" {
+  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  name             = "log_storage"
+  org_id           = local.organization_id
+  include_children = true
+  destination      = "storage.googleapis.com/${module.log_storage.name}"
+  filter           = ""
+}
 
-# module "log_storage" {
-#   source       = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
-#   name         = "log_storage"
-#   project      = module.projects["management/logging"].project_id
-#   location     = var.location
-#   kms_key_name = module.kms
-# }
+module "log_storage" {
+  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+  name                = "log_storage"
+  project             = local.projects["logging"]
+  location            = var.location
+  kms_key_id          = module.logging_kms_key.key_id
+  data_classification = "logs"
+}
 
 # module "logging_to_pubsub" {
 
