@@ -36,11 +36,11 @@ data "google_cloud_asset_resources_search_all" "projects" {
 
 locals {
   folders = {
-    for folder in data.google_cloud_asset_resources_search_all.folders.results : folder.display_name => folder
+    for folder in data.google_cloud_asset_resources_search_all.folders.results : folder.display_name => substr(folder.name, 46, -1)
   }
 
   projects = {
-    for project in data.google_cloud_asset_resources_search_all.projects.results : project.display_name => project
+    for project in data.google_cloud_asset_resources_search_all.projects.results : project.display_name => substr(project.name, 47, -1)
   }
 }
 
