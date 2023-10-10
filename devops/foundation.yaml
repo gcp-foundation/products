@@ -12,6 +12,7 @@ folders:
     - cloudbuild.googleapis.com           # - Required for running terraform
     - cloudasset.googleapis.com           # - Required for running terraform
     - orgpolicy.googleapis.com            # - Required for running terraform
+    - bigquery.googleapis.com             # - Required for running terraform
     - compute.googleapis.com              # - Enabled by google
     - oslogin.googleapis.com              # - Enabled by google
   - displayName: pipelines
