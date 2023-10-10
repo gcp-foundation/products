@@ -19,10 +19,6 @@ module "logging_service_identity" {
   service  = each.value
 }
 
-output "identities" {
-  value = module.logging_service_identity
-}
-
 data "google_storage_project_service_account" "logging_gcs_account" {
   project = local.projects["logging"]
 }
