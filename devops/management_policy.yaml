@@ -20,6 +20,9 @@ organizations:
     - role: roles/storage.admin
       members:
       - ${management_sa}
+    - role: roles/pubsub.admin
+      members:
+      - ${management_sa}
     - role: roles/bigquery.admin
       members:
       - ${management_sa}

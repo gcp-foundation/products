@@ -14,6 +14,7 @@ folders:
     - cloudbuild.googleapis.com           # - Required for running terraform
     - cloudasset.googleapis.com           # - Required for running terraform
     - orgpolicy.googleapis.com            # - Required for running terraform
+    - pubsub.googleapis.com               # - Required for running terraform
     - bigquery.googleapis.com             # - Required for running terraform
     - bigquerymigration.googleapis.com    # - Enabled by google as dependency
     - bigquerystorage.googleapis.com      # - Enabled by google as dependency
