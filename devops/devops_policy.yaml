@@ -20,5 +20,8 @@ organizations:
     - role: roles/artifactregistry.admin
       members:
       - ${devops_sa}
+    - role: roles/storage.admin
+      members:
+      - ${devops_sa}
 folders: []
 projects: []
