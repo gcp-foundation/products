@@ -24,7 +24,7 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 }
 
 resource "google_service_account_iam_member" "workload_user" {
-  service_account_id = "serviceAccount:${module.service_account["devops"].email}"
+  service_account_id = module.service_account["devops"].name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${module.projects["devops/pipelines"].number}/locations/global/workloadIdentityPools/github/attribute.repository/${module.organization.org_id}/devops"
 }
