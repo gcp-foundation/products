@@ -1,13 +1,8 @@
 displayName: ${domain}
 orgPolicy:                                
-- name: compute.disableNestedVirtualization
+- name: compute.disableAllIpv6
   spec:                                     
     rules:
     - enforce: true
-# folders:
-# - displayName : devops
-# - displayName : management
-# projects:
-# - displayName: logging
-# - displayName: guardrails
-# - displayName: billing
+folders: []
+projects: []
