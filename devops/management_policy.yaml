@@ -14,10 +14,13 @@ organizations:
     - role: roles/cloudasset.viewer
       members:
       - ${management_sa}
+    - role: roles/logging.admin
+      members:
+      - ${management_sa}
     - role: roles/storage.admin
       members:
       - ${management_sa}
-    - role: roles/logging.admin
+    - role: roles/bigquery.admin
       members:
       - ${management_sa}
 folders: []
