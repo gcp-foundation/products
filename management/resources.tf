@@ -34,11 +34,3 @@ locals {
     project.display_name => { project_id = substr(project.name, 47, -1), number = substr(project.project, 9, -1) }
   }
 }
-
-output "folders" {
-  value = data.google_cloud_asset_resources_search_all.folders
-}
-
-output "projects" {
-  value = data.google_cloud_asset_resources_search_all.projects
-}
