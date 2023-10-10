@@ -7,7 +7,7 @@ locals {
     logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
   EOF
 
-  logging_services   = ["pubsub.googleapis.com", "artifactregistry.googleapis.com", "bigquery.googleapis.com"]
+  logging_services   = ["pubsub.googleapis.com", "artifactregistry.googleapis.com"]
   other_encrypters   = ["serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}"]
   logging_encrypters = concat([for identity in module.logging_service_identity : "serviceAccount:${identity.email}"], local.other_encrypters)
 }
