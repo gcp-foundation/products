@@ -74,14 +74,8 @@ module "log_bigqeury" {
   location = var.location
 }
 
-resource "google_storage_bucket_iam_member" "storage_sink_member" {
-  bucket = module.log_storage.name
-  role   = "roles/storage.objectCreator"
-  member = module.log_sink_all_to_storage.writer_identity
-}
-
 resource "google_project_iam_member" "bigquery_sink_member" {
-  project = google_bigquery_dataset.dataset.project
+  project = local.project["logging"]
   role    = "roles/bigquery.dataEditor"
   member  = module.log_sink_filtered_to_bigquery.writer_identity
 }
