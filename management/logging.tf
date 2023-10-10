@@ -9,8 +9,9 @@ locals {
 
   logging_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com"]
   other_encrypters = [
-    "serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}"
+    "serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}",
     #    "serviceAccount:bq-${local.projects["logging"].number}@bigquery-encryption.iam.gserviceaccount.com}"
+    "serviceAccount:bq-164725902861@bigquery-encryption.iam.gserviceaccount.com"
   ]
   logging_encrypters = concat([for identity in module.logging_service_identity : "serviceAccount:${identity.email}"], local.other_encrypters)
 }
