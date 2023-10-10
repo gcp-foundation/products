@@ -37,7 +37,9 @@ folders:
     - compute.googleapis.com              # - Enabled by google
     - oslogin.googleapis.com              # - Enabled by google
     - cloudkms.googleapis.com             # - For CMEK keys
-    - bigquery.googleapis.com
+    - bigquery.googleapis.com             # - For logging to bigquery
+    - bigquerymigration.googleapis.com    # - Enabled by google as dependency
+    - bigquerystorage.googleapis.com      # - Enabled by google as dependency
   - displayName: billing
     services: 
     - compute.googleapis.com              # - Enabled by google

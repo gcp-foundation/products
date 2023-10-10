@@ -68,10 +68,11 @@ module "log_sink_filtered_to_bigquery" {
 }
 
 module "log_bigquery" {
-  source   = "github.com/gcp-foundation/modules//bigquery/dataset?ref=0.0.1"
-  name     = "log_bigquery"
-  project  = local.projects["logging"]
-  location = var.location
+  source     = "github.com/gcp-foundation/modules//bigquery/dataset?ref=0.0.1"
+  name       = "log_bigquery"
+  project    = local.projects["logging"]
+  location   = var.location
+  kms_key_id = module.logging_kms_key.key_id
 }
 
 resource "google_project_iam_member" "bigquery_sink_member" {
