@@ -7,8 +7,11 @@ locals {
     logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
   EOF
 
-  logging_services   = ["pubsub.googleapis.com", "artifactregistry.googleapis.com", "bigquery.googleapis.com"]
-  other_encrypters   = ["serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}"]
+  logging_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com", "bigquery.googleapis.com"]
+  other_encrypters = [
+    "serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}",
+    "serviceAccount:bq-${local.projects.number}@bigquery-encryption.iam.gserviceaccount.com}"
+  ]
   logging_encrypters = concat([for identity in module.logging_service_identity : "serviceAccount:${identity.email}"], local.other_encrypters)
 }
 
@@ -50,6 +53,8 @@ module "log_storage" {
   location            = var.location
   kms_key_id          = module.logging_kms_key.key_id
   data_classification = "logs"
+
+  depends_on = [module.logging_kms_key.encrypters]
 }
 
 resource "google_storage_bucket_iam_member" "storage_sink_member" {
@@ -73,6 +78,8 @@ module "log_bigquery" {
   project    = local.projects["logging"]
   location   = var.location
   kms_key_id = module.logging_kms_key.key_id
+
+  depends_on = [module.logging_kms_key.encrypters]
 }
 
 resource "google_project_iam_member" "bigquery_sink_member" {

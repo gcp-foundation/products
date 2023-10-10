@@ -33,3 +33,11 @@ locals {
     for project in data.google_cloud_asset_resources_search_all.projects.results : project.display_name => substr(project.name, 47, -1)
   }
 }
+
+output "folders" {
+  value = data.google_cloud_asset_resources_search_all.project
+}
+
+output "projects" {
+  value = data.google_cloud_asset_resources_search_all.project
+}
