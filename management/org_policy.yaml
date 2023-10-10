@@ -1,0 +1,13 @@
+displayName: ${domain}
+orgPolicy:                                
+- name: compute.disableNestedVirtualization
+  spec:                                     
+    rules:
+    - enforce: true
+# folders:
+# - displayName : devops
+# - displayName : management
+# projects:
+# - displayName: logging
+# - displayName: guardrails
+# - displayName: billing

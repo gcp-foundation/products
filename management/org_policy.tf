@@ -1,4 +1,11 @@
 locals {
+
+  environment = {
+    domain = var.domain
+  }
+
+  organization = yamldecode(templatefile("${path.module}/org_policy.yaml", local.environment))
+
   organization_policies = flatten([
     for policy in local.organization.orgPolicy :
     { policy = policy } if try(policy.exists, false) != true
