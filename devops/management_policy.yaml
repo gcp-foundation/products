@@ -4,7 +4,7 @@ organizations:
     bindings:
     - role: roles/resourcemanager.organizationAdmin
       members:
-      - ${devops_sa}
+      - ${managemet_sa}
     - role: roles/orgpolicy.policyAdmin
       members:
       - ${management_sa}
