@@ -10,9 +10,7 @@ locals {
   logging_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com"]
   other_encrypters = [
     "serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}",
-    # "serviceAccount:bq-${local.projects["logging"].number}@bigquery-encryption.iam.gserviceaccount.com}"
     "serviceAccount:bq-${local.projects["logging"].number}@bigquery-encryption.iam.gserviceaccount.com"
-    # "serviceAccount:bq-164725902861@bigquery-encryption.iam.gserviceaccount.com"
   ]
   logging_encrypters = concat([for identity in module.logging_service_identity : "serviceAccount:${identity.email}"], local.other_encrypters)
 }
@@ -72,6 +70,10 @@ module "log_sink_filtered_to_bigquery" {
   include_children = true
   destination      = "bigquery.googleapis.com/projects/${local.projects["logging"].project_id}/datasets/${module.log_bigquery.dataset_id}"
   filter           = local.log_filter
+
+  # bigquery_options = {
+  #   use_partitioned_tables = true
+  # }
 }
 
 module "log_bigquery" {
@@ -90,11 +92,29 @@ resource "google_project_iam_member" "bigquery_sink_member" {
   member  = module.log_sink_filtered_to_bigquery.writer_identity
 }
 
-# module "logging_to_pubsub" {
+module "log_sink_filtered_to_pubsub" {
+  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  name             = "log_pubsub"
+  org_id           = local.organization_id
+  include_children = true
+  destination      = "pubsub.googleapis.com/projects/${local.projects["logging"].project_id}/topics/${module.log_pubsub_topic.name}"
+  filter           = local.log_filter
+}
 
-# }
+module "log_pubsub_topic" {
+  source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
+  name       = "log_pubsub"
+  project    = local.projects["logging"].project_id
+  kms_key_id = module.logging_kms_key.key_id
 
-# module "log_pubsub" {
+  depends_on = [module.logging_kms_key.encrypters]
+}
 
-# }
+resource "google_pubsub_topic_iam_member" "pubsub_sink_member" {
+  project = local.projects["logging"].project_id
+  topic   = module.log_pubsub_topic.name
+  role    = "roles/pubsub.publisher"
+  member  = module.log_sink_filtered_to_pubsub.writer_identity
+}
+
 
