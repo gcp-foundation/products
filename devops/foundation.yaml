@@ -96,6 +96,7 @@ folders:
     services: 
     - compute.googleapis.com              # - Enabled by google
     - oslogin.googleapis.com              # - Enabled by google
+    - cloudkms.googleapis.com             # - For CMEK keys
   - displayName: billing
     services: 
     - compute.googleapis.com              # - Enabled by google
@@ -104,3 +105,4 @@ folders:
     services: 
     - compute.googleapis.com              # - Enabled by google
     - oslogin.googleapis.com              # - Enabled by google
+    - cloudkms.googleapis.com             # - For CMEK keys

@@ -2,9 +2,9 @@ organizations:
 - name: organizations/${organization_id}
   iamPolicy:
     bindings:
-    - role: roles/resourcemanager.organizationViewer
+    - role: roles/resourcemanager.organizationAdmin
       members:
-      - ${management_sa}
+      - ${devops_sa}
     - role: roles/orgpolicy.policyAdmin
       members:
       - ${management_sa}
