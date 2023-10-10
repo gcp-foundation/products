@@ -23,5 +23,9 @@ organizations:
     - role: roles/storage.admin
       members:
       - ${devops_sa}
+    - role: roles/iam.workloadIdentityPoolAdmin
+      members:
+      - ${devops_sa}
+
 folders: []
 projects: []
