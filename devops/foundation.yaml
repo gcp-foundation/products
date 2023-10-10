@@ -1,4 +1,4 @@
-displayName: latest.gcp-foundation.com      
+displayName: ${domain}
 folders:
 - displayName : devops
   projects:
