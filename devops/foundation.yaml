@@ -4,6 +4,8 @@ folders:
   projects:
   - displayName: control
     services: 
+    - compute.googleapis.com              # - Enabled by google by default
+    - oslogin.googleapis.com              # - Enabled by google by default
     - cloudkms.googleapis.com             # - For CMEK keys
     - storage.googleapis.com              # - For storage buckets (terraform state)
     - cloudresourcemanager.googleapis.com # - Required for running terraform
@@ -13,18 +15,18 @@ folders:
     - cloudasset.googleapis.com           # - Required for running terraform
     - orgpolicy.googleapis.com            # - Required for running terraform
     - bigquery.googleapis.com             # - Required for running terraform
-    - compute.googleapis.com              # - Enabled by google
-    - oslogin.googleapis.com              # - Enabled by google
+    - bigquerymigration.googleapis.com    # - Enabled by google as dependency
+    - bigquerystorage.googleapis.com      # - Enabled by google as dependency
   - displayName: pipelines
     services:       
+    - compute.googleapis.com              # - Enabled by google by default
+    - oslogin.googleapis.com              # - Enabled by google by default
     - serviceusage.googleapis.com         # - For enabling services 
     - cloudkms.googleapis.com             # - For CMEK keys
     - storage.googleapis.com              # - For storage buckets (cloudbuild outputs)
     - artifactregistry.googleapis.com     # - For docker images
     - sourcerepo.googleapis.com           # - For cloud source repositories
     - cloudbuild.googleapis.com           # - For cloud build triggers
-    - compute.googleapis.com              # - Enabled by google
-    - oslogin.googleapis.com              # - Enabled by google
     - logging.googleapis.com              # - Enabled by google - dependency on cloudbuild
     - pubsub.googleapis.com               # - Enabled by google - dependency on source repos
 #    - containterregistry.googleapis.com  # - Enabled by google - dependency on cloudbuild?
@@ -34,18 +36,19 @@ folders:
   projects:
   - displayName: logging
     services: 
-    - compute.googleapis.com              # - Enabled by google
-    - oslogin.googleapis.com              # - Enabled by google
+    - compute.googleapis.com              # - Enabled by google by default
+    - oslogin.googleapis.com              # - Enabled by google by default
     - cloudkms.googleapis.com             # - For CMEK keys
     - bigquery.googleapis.com             # - For logging to bigquery
     - bigquerymigration.googleapis.com    # - Enabled by google as dependency
     - bigquerystorage.googleapis.com      # - Enabled by google as dependency
   - displayName: billing
     services: 
-    - compute.googleapis.com              # - Enabled by google
-    - oslogin.googleapis.com              # - Enabled by google
+    - compute.googleapis.com              # - Enabled by google by default
+    - oslogin.googleapis.com              # - Enabled by google by default
+    - bigquery.googleapis.com             # - For billing to bigquery
   - displayName: guardrails
     services: 
-    - compute.googleapis.com              # - Enabled by google
-    - oslogin.googleapis.com              # - Enabled by google
+    - compute.googleapis.com              # - Enabled by google by default
+    - oslogin.googleapis.com              # - Enabled by google by default
     - cloudkms.googleapis.com             # - For CMEK keys
