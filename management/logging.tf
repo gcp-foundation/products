@@ -52,6 +52,13 @@ module "log_storage" {
   data_classification = "logs"
 }
 
+resource "google_storage_bucket_iam_member" "storage_sink_member" {
+  bucket = module.log_storage.name
+  role   = "roles/storage.objectCreator"
+  member = module.log_sink_all_to_storage.writer_identity
+}
+
+
 # module "logging_to_pubsub" {
 
 # }

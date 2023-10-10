@@ -17,5 +17,8 @@ organizations:
     - role: roles/storage.admin
       members:
       - ${management_sa}
+    - role: roles/logging.admin
+      members:
+      - ${management_sa}
 folders: []
 projects: []
