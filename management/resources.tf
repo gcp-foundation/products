@@ -35,9 +35,9 @@ locals {
 }
 
 output "folders" {
-  value = data.google_cloud_asset_resources_search_all.project
+  value = data.google_cloud_asset_resources_search_all.folders
 }
 
 output "projects" {
-  value = data.google_cloud_asset_resources_search_all.project
+  value = data.google_cloud_asset_resources_search_all.projects
 }
