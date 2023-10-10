@@ -67,7 +67,7 @@ module "log_sink_filtered_to_bigquery" {
   filter           = ""
 }
 
-module "log_bigqeury" {
+module "log_bigquery" {
   source   = "github.com/gcp-foundation/modules//bigquery/dataset?ref=0.0.1"
   name     = "log_bigquery"
   project  = local.projects["logging"]
