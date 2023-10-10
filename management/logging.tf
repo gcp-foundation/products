@@ -39,8 +39,8 @@ module "log_sink_all_to_storage" {
   name             = "log_storage"
   org_id           = local.organization_id
   include_children = true
-  destination      = "storage.googleapis.com/${module.log_storage.name}"
-  filter           = ""
+  destination      = "bigquery.googleapis.com/${module.log_storage.name}"
+  filter           = log_filter
 }
 
 module "log_storage" {
@@ -58,6 +58,33 @@ resource "google_storage_bucket_iam_member" "storage_sink_member" {
   member = module.log_sink_all_to_storage.writer_identity
 }
 
+module "log_sink_filtered_to_bigquery" {
+  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  name             = "log_bigquery"
+  org_id           = local.organization_id
+  include_children = true
+  destination      = "bigquery.googleapis.com/projects/${local.projects["logging"]}/datasets/${module.log_bigquery.dataset_id}"
+  filter           = ""
+}
+
+module "log_bigqeury" {
+  source   = "github.com/gcp-foundation/modules//bigquery/dataset?ref=0.0.1"
+  name     = "log_bigquery"
+  project  = local.projects["logging"]
+  location = var.location
+}
+
+resource "google_storage_bucket_iam_member" "storage_sink_member" {
+  bucket = module.log_storage.name
+  role   = "roles/storage.objectCreator"
+  member = module.log_sink_all_to_storage.writer_identity
+}
+
+resource "google_project_iam_member" "bigquery_sink_member" {
+  project = google_bigquery_dataset.dataset.project
+  role    = "roles/bigquery.dataEditor"
+  member  = module.log_sink_filtered_to_bigquery.writer_identity
+}
 
 # module "logging_to_pubsub" {
 
