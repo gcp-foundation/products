@@ -39,8 +39,8 @@ module "log_sink_all_to_storage" {
   name             = "log_storage"
   org_id           = local.organization_id
   include_children = true
-  destination      = "bigquery.googleapis.com/${module.log_storage.name}"
-  filter           = log_filter
+  destination      = "storage.googleapis.com/${module.log_storage.name}"
+  filter           = ""
 }
 
 module "log_storage" {
@@ -64,7 +64,7 @@ module "log_sink_filtered_to_bigquery" {
   org_id           = local.organization_id
   include_children = true
   destination      = "bigquery.googleapis.com/projects/${local.projects["logging"]}/datasets/${module.log_bigquery.dataset_id}"
-  filter           = ""
+  filter           = local.log_filter
 }
 
 module "log_bigquery" {
@@ -75,7 +75,7 @@ module "log_bigquery" {
 }
 
 resource "google_project_iam_member" "bigquery_sink_member" {
-  project = local.project["logging"]
+  project = local.projects["logging"]
   role    = "roles/bigquery.dataEditor"
   member  = module.log_sink_filtered_to_bigquery.writer_identity
 }
