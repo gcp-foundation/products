@@ -150,7 +150,7 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
 
         content {
           id         = step.value.id
-          name       = join(":", [local.cloudbuild_image, "$_CLOUDBUILD_SHA"])
+          name       = join(":", [local.cloudbuild_image, "$$_CLOUDBUILD_SHA"])
           entrypoint = step.value.entrypoint
           args       = step.value.args
         }
@@ -227,7 +227,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
 
         content {
           id         = step.value.id
-          name       = join(":", [local.cloudbuild_image, "$_CLOUDBUILD_SHA"])
+          name       = join(":", [local.cloudbuild_image, "$$_CLOUDBUILD_SHA"])
           entrypoint = step.value.entrypoint
           args       = step.value.args
         }
