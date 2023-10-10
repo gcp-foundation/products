@@ -5,7 +5,6 @@ locals {
 
   gar_name         = "cloudbuild"
   cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects["devops/pipelines"].project_id}/${local.gar_name}/terraform@sha256"
-  cloudbuild_sha   = "87ae23caeba0dab16329e88b40ad828d6f8d9fa110a324e5c9f69bfc6c43c37f"
 
   repositories = ["devops", "management"]
   pipelines = {
@@ -139,6 +138,7 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
   substitutions = {
     _DEFAULT_REGION       = var.location
     _ARTIFACT_BUCKET_NAME = module.build_output.name
+    _CLOUDBUILD_SHA       = var.cloudbuild_sha
   }
 
   dynamic "build" {
@@ -150,7 +150,7 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
 
         content {
           id         = step.value.id
-          name       = join(":", [local.cloudbuild_image, local.cloudbuild_sha])
+          name       = join(":", [local.cloudbuild_image, "$_CLOUDBUILD_SHA"])
           entrypoint = step.value.entrypoint
           args       = step.value.args
         }
@@ -215,6 +215,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
   substitutions = {
     _DEFAULT_REGION       = var.location
     _ARTIFACT_BUCKET_NAME = module.build_output.name
+    _CLOUDBUILD_SHA       = var.cloudbuild_sha
   }
 
   dynamic "build" {
@@ -226,7 +227,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
 
         content {
           id         = step.value.id
-          name       = join(":", [local.cloudbuild_image, local.cloudbuild_sha])
+          name       = join(":", [local.cloudbuild_image, "$_CLOUDBUILD_SHA"])
           entrypoint = step.value.entrypoint
           args       = step.value.args
         }

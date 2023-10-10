@@ -13,6 +13,12 @@ variable "location" {
   type        = string
 }
 
+variable "cloudbuild_sha" {
+  description = "The sha of the cloudbuild image to use for pipelines (known after first apply)"
+  type        = string
+  default     = "" # for first build only
+}
+
 variable "labels" {
   description = "Labels to apply to all foundation projects"
   type        = map(string)
