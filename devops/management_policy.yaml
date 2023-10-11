@@ -26,5 +26,11 @@ organizations:
     - role: roles/bigquery.admin
       members:
       - ${management_sa}
+    - role: roles/artifactregistry.admin
+      members:
+      - ${management_sa}
+    - role: roles/cloudfunction.admin
+      members:
+      - ${management_sa}
 folders: []
 projects: []
