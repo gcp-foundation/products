@@ -7,14 +7,15 @@ locals {
 module "control_service_identity" {
   source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
   for_each = toset(local.pipeline_services)
-  project  = module.projects["devops/control"].project_id
+  project  = module.projects["devops/${local.environment.project_control}"].project_id
   service  = each.value
 
-  depends_on = [module.projects["devops/control"]]
+  depends_on = [module.projects]
 }
 
+# Uses organization policy V1 to avoid needing to set quota project during bootstrap
 resource "google_project_organization_policy" "iam_disableCrossProjectServiceAccountUsage" {
-  project    = module.projects["devops/control"].project_id
+  project    = module.projects["devops/${local.environment.project_control}"].project_id
   constraint = "iam.disableCrossProjectServiceAccountUsage"
   boolean_policy {
     enforced = false
@@ -22,27 +23,27 @@ resource "google_project_organization_policy" "iam_disableCrossProjectServiceAcc
 }
 
 data "google_storage_project_service_account" "control_gcs_account" {
-  project = module.projects["devops/control"].project_id
+  project = module.projects["devops/${local.environment.project_control}"].project_id
 
-  depends_on = [module.projects["devops/control"]]
+  depends_on = [module.projects]
 }
 
 module "control_kms_key" {
   source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
-  name          = module.projects["devops/control"].project_id
-  key_ring_name = module.projects["devops/control"].project_id
-  project       = module.projects["devops/control"].project_id
+  name          = module.projects["devops/${local.environment.project_control}"].project_id
+  key_ring_name = module.projects["devops/${local.environment.project_control}"].project_id
+  project       = module.projects["devops/${local.environment.project_control}"].project_id
   location      = var.location
   encrypters    = local.control_encrypters
   decrypters    = local.control_encrypters
 
-  depends_on = [module.projects["devops/control"].services]
+  depends_on = [module.projects]
 }
 
 module "state_files" {
   source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
   name                = "tfstate"
-  project             = module.projects["devops/control"].project_id
+  project             = module.projects["devops/${local.environment.project_control}"].project_id
   location            = var.location
   data_classification = "terraform_state"
   kms_key_id          = module.control_kms_key.key_id
@@ -57,26 +58,26 @@ module "service_account" {
   name         = "sa-${each.value.name}"
   display_name = each.value.display_name
   description  = each.value.description
-  project      = module.projects["devops/control"].project_id
+  project      = module.projects["devops/${local.environment.project_control}"].project_id
 }
 
 resource "google_project_iam_member" "sa_project_log_writer" {
   for_each = local.service_accounts
-  project  = module.projects["devops/pipelines"].project_id
+  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
   role     = "roles/logging.logWriter"
   member   = "serviceAccount:${module.service_account[each.key].email}"
 }
 
 resource "google_project_iam_member" "sa_project_source_reader" {
   for_each = local.service_accounts
-  project  = module.projects["devops/pipelines"].project_id
+  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
   role     = "roles/source.reader"
   member   = "serviceAccount:${module.service_account[each.key].email}"
 }
 
 resource "google_project_iam_member" "sa_project_builder" {
   for_each = local.service_accounts
-  project  = module.projects["devops/pipelines"].project_id
+  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
   role     = "roles/cloudbuild.builds.builder"
   member   = "serviceAccount:${module.service_account[each.key].email}"
 }
@@ -108,7 +109,7 @@ resource "google_service_account_iam_member" "sa_cloudbuild_token_creator" {
   for_each           = local.service_accounts
   service_account_id = module.service_account[each.key].name
   role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:service-${module.projects["devops/pipelines"].number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"
+  member             = "serviceAccount:service-${module.projects["devops/${local.environment.project_pipelines}"].number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"
 }
 
 # Change this to object admin

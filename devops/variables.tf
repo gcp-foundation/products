@@ -34,3 +34,9 @@ variable "labels" {
     project-code              = "245924"
   }
 }
+
+variable "environment" {
+  description = "Environment specific settings"
+  type        = map(string)
+  default     = {}
+}

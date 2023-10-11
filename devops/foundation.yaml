@@ -1,8 +1,8 @@
 displayName: ${domain}
 folders:
-- displayName : devops
+- displayName : ${folder_devops}
   projects:
-  - displayName: control
+  - displayName: ${project_control}
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
@@ -18,7 +18,7 @@ folders:
     - bigquery.googleapis.com             # - Required for running terraform
     - bigquerymigration.googleapis.com    # - Enabled by google as dependency
     - bigquerystorage.googleapis.com      # - Enabled by google as dependency
-  - displayName: pipelines
+  - displayName: ${project_pipelines}
     services:       
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
@@ -33,9 +33,9 @@ folders:
 #    - containterregistry.googleapis.com  # - Enabled by google - dependency on cloudbuild?
     - storage-api.googleapis.com          # - Enabled by google - dependency on cloudbuild?
     - iam.googleapis.com                  # - Required for pipelines?
-- displayName: management
+- displayName: ${folder_management}
   projects:
-  - displayName: logging
+  - displayName: ${project_logging}
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
@@ -43,12 +43,12 @@ folders:
     - bigquery.googleapis.com             # - For logging to bigquery
     - bigquerymigration.googleapis.com    # - Enabled by google as dependency
     - bigquerystorage.googleapis.com      # - Enabled by google as dependency
-  - displayName: billing
+  - displayName: ${project_billing}
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
     - bigquery.googleapis.com             # - For billing to bigquery
-  - displayName: guardrails
+  - displayName: ${project_guardrails}
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default

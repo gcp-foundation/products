@@ -1,9 +1,16 @@
 locals {
 
-  environment = {
-    domain         = var.domain
-    billingAccount = var.billing_account
-  }
+  environment = merge({
+    domain             = var.domain
+    billingAccount     = var.billing_account
+    folder_devops      = "devops"
+    folder_management  = "management"
+    project_control    = "control"
+    project_pipelines  = "pipelines"
+    project_logging    = "logging"
+    project_billing    = "billing"
+    project_guardrails = "guardrails"
+  }, var.environment)
 
   organization = yamldecode(templatefile("${path.module}/foundation.yaml", local.environment))
 

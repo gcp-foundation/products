@@ -1,9 +1,5 @@
 locals {
 
-  environment = {
-    domain = var.domain
-  }
-
   organization = yamldecode(templatefile("${path.module}/org_policy.yaml", local.environment))
 
   organization_policies = flatten([

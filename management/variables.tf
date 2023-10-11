@@ -7,3 +7,10 @@ variable "location" {
   description = "The location to deploy resource"
   type        = string
 }
+
+
+variable "environment" {
+  description = "Environment specific settings"
+  type        = map(string)
+  default     = {}
+}

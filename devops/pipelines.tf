@@ -4,7 +4,7 @@ locals {
   pipeline_encrypters       = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], local.other_pipeline_encrypters)
 
   gar_name         = "cloudbuild"
-  cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects["devops/pipelines"].project_id}/${local.gar_name}/terraform@sha256"
+  cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects["devops/${local.environment.project_pipelines}"].project_id}/${local.gar_name}/terraform@sha256"
 
   repositories = ["devops", "management"]
   pipelines = {
@@ -35,28 +35,28 @@ locals {
 module "pipeline_service_identity" {
   source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
   for_each = toset(local.pipeline_services)
-  project  = module.projects["devops/pipelines"].project_id
+  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
   service  = each.value
 
-  depends_on = [module.projects["devops/pipelines"]]
+  depends_on = [module.projects]
 }
 
 data "google_storage_project_service_account" "pipeline_gcs_account" {
-  project = module.projects["devops/pipelines"].project_id
+  project = module.projects["devops/${local.environment.project_pipelines}"].project_id
 
-  depends_on = [module.projects["devops/pipelines"].services]
+  depends_on = [module.projects]
 }
 
 module "pipeline_kms_key" {
   source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
-  name          = module.projects["devops/pipelines"].project_id
-  key_ring_name = module.projects["devops/pipelines"].project_id
-  project       = module.projects["devops/pipelines"].project_id
+  name          = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  key_ring_name = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project       = module.projects["devops/${local.environment.project_pipelines}"].project_id
   location      = var.location
   encrypters    = local.pipeline_encrypters
   decrypters    = local.pipeline_encrypters
 
-  depends_on = [module.projects["devops/pipelines"].services]
+  depends_on = [module.projects]
 }
 
 module "artifact_registry" {
@@ -64,12 +64,12 @@ module "artifact_registry" {
 
   name        = local.gar_name
   description = "Docker containers for cloudbuild"
-  project     = module.projects["devops/pipelines"].project_id
+  project     = module.projects["devops/${local.environment.project_pipelines}"].project_id
   location    = var.location
 
   kms_key_id = module.pipeline_kms_key.key_id
 
-  depends_on = [module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters, module.projects["devops/pipelines"].services]
+  depends_on = [module.projects, module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters]
 }
 
 locals {
@@ -80,7 +80,7 @@ locals {
 
 resource "null_resource" "cloudbuild_terraform_builder" {
   triggers = {
-    project_id                  = module.projects["devops/pipelines"].project_id
+    project_id                  = module.projects["devops/${local.environment.project_pipelines}"].project_id
     terraform_version_sha256sum = local.terraform_version_sha256sum
     terraform_version           = local.terraform_version
     gar_name                    = local.gar_name
@@ -89,7 +89,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
 
   provisioner "local-exec" {
     command = <<EOT
-    gcloud builds submit ${path.module}/cloudbuild_builder/ --project ${module.projects["devops/pipelines"].project_id} --config=${path.module}/cloudbuild_builder/cloudbuild.yaml --substitutions=_GCLOUD_VERSION=${local.gcloud_version},_TERRAFORM_VERSION=${local.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${local.terraform_version_sha256sum},_REGION=${module.artifact_registry.location},_REPOSITORY=${local.gar_name}
+    gcloud builds submit ${path.module}/cloudbuild_builder/ --project ${module.projects["devops/${local.environment.project_pipelines}"].project_id} --config=${path.module}/cloudbuild_builder/cloudbuild.yaml --substitutions=_GCLOUD_VERSION=${local.gcloud_version},_TERRAFORM_VERSION=${local.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${local.terraform_version_sha256sum},_REGION=${module.artifact_registry.location},_REPOSITORY=${local.gar_name}
   EOT
   }
 
@@ -99,12 +99,12 @@ resource "null_resource" "cloudbuild_terraform_builder" {
 module "build_output" {
   source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
   name                = "build-outputs"
-  project             = module.projects["devops/pipelines"].project_id
+  project             = module.projects["devops/${local.environment.project_pipelines}"].project_id
   location            = var.location
   data_classification = "internal"
   kms_key_id          = module.pipeline_kms_key.key_id
 
-  depends_on = [module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters, module.projects["devops/pipelines"].services]
+  depends_on = [module.projects, module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters]
 }
 
 module "repository" {
@@ -112,9 +112,9 @@ module "repository" {
   for_each = toset(local.repositories)
 
   name    = each.value
-  project = module.projects["devops/pipelines"].project_id
+  project = module.projects["devops/${local.environment.project_pipelines}"].project_id
 
-  depends_on = [module.projects["devops/pipelines"].services]
+  depends_on = [module.projects]
 }
 
 resource "google_cloudbuild_trigger" "plan-trigger" {
@@ -122,7 +122,7 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
   #   source   = "github.com/gcp-foundation/modules//devops/cloudbuild?ref=0.0.1"
   for_each = local.pipelines
 
-  project     = module.projects["devops/pipelines"].project_id
+  project     = module.projects["devops/${local.environment.project_pipelines}"].project_id
   location    = var.location
   name        = "${each.key}-terraform-plan"
   description = "Terraform plan for ${each.key}"
@@ -175,7 +175,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
   #   source   = "github.com/gcp-foundation/modules//devops/cloudbuild?ref=0.0.1"
   for_each = local.pipelines
 
-  project     = module.projects["devops/pipelines"].project_id
+  project     = module.projects["devops/${local.environment.project_pipelines}"].project_id
   location    = var.location
   name        = "${each.key}-terraform-apply"
   description = "Terraform plan for ${each.key}"
