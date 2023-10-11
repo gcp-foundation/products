@@ -114,6 +114,14 @@ module "guardrails_pubsub_log_topic" {
   depends_on = [module.guardrails_kms_key.encrypters]
 }
 
+resource "google_pubsub_topic_iam_member" "guardrails_pubsub_sink_member" {
+  for_each = local.log_sinks
+  project  = local.projects[local.environment.project_guardrails].project_id
+  topic    = "guardrail-${each.value.topic}"
+  role     = "roles/pubsub.publisher"
+  member   = module.guardrails_log_sink[each.key].writer_identity
+}
+
 module "service_account" {
   source   = "github.com/gcp-foundation/modules//iam/service_account?ref=0.0.1"
   for_each = local.guardrails
@@ -147,6 +155,8 @@ module "guardrails_cloudfunction" {
   //  vpc_connector = TBD
 
   environment_variables = {}
+
+  depends_on = [module.guardrails_kms_key.encrypters]
 }
 
 module "guardrail_pubsub_topic_alerts" {
