@@ -33,7 +33,7 @@ locals {
 }
 
 output "pipeline_encrypters" {
-  value = locals.pipeline_encrypters
+  value = local.pipeline_encrypters
 }
 
 module "pipeline_service_identity" {
