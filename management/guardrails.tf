@@ -2,7 +2,7 @@ locals {
   guardrails = {
     org-policy = {
       name        = "org-policy"
-      log_topic   = "org-poicy"
+      log_topic   = "org-policy"
       alert_topic = "guardrails-alert"
     }
   }
