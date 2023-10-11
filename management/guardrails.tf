@@ -76,9 +76,9 @@ data "archive_file" "guardrails_source" {
 }
 
 resource "google_storage_bucket_object" "guardrails" {
-  name   = format("%s_%s%s", "guardrail", data.archive_file.source.output.md5, ".zip")
-  bucket = modules.guardrails_storage.name
-  source = data.archive_file.guardrails_source.source_output_path
+  name   = format("%s_%s%s", "guardrail", data.archive_file.guardrails_source.output.md5, ".zip")
+  bucket = module.guardrails_storage.name
+  source = data.archive_file.guardrails_source.output_path
 }
 
 module "guardrails_artifact_registry" {
@@ -86,7 +86,7 @@ module "guardrails_artifact_registry" {
 
   name        = "guardrails"
   description = "Docker containers for guardrail cloudfunctions"
-  project     = locals.projects[local.environment.project_guardrails].project_id
+  project     = local.projects[local.environment.project_guardrails].project_id
   location    = var.location
 
   kms_key_id = module.guardrails_kms_key.key_id
@@ -124,7 +124,7 @@ module "guardrails_cloudfunction" {
   description = "Guardrail for ${each.value.name}"
   runtime     = "python311"
 
-  service_account_email = "sa-guardrail-${each.value.name}@${local.projects[local.environent.project_guardrails].number}.iam.gserviceaccount.com"
+  service_account_email = "sa-guardrail-${each.value.name}@${local.projects[local.environment.project_guardrails].number}.iam.gserviceaccount.com"
 
   source_archive_bucket = module.guardrails_storage.name
   source_archive_object = google_storage_bucket_object.guardrails.name
@@ -132,7 +132,7 @@ module "guardrails_cloudfunction" {
   pubsub_topic_name = module.guardrails_pubsub_log_topic[each.value].name
   entry_point       = "event_handler"
   kms_key_id        = module.guardrails_kms_key.key_id
-  docker_repository = module.module.guardrails_artifact_registry.id
+  docker_repository = module.guardrails_artifact_registry.id
 
   //  vpc_connector = TBD
 
