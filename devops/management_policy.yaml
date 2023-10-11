@@ -29,7 +29,7 @@ organizations:
     - role: roles/artifactregistry.admin
       members:
       - ${management_sa}
-    - role: roles/cloudfunction.admin
+    - role: roles/cloudfunctions.admin
       members:
       - ${management_sa}
 folders: []
