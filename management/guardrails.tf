@@ -76,7 +76,7 @@ data "archive_file" "guardrails_source" {
 }
 
 resource "google_storage_bucket_object" "guardrails" {
-  name   = format("%s_%s%s", "guardrail", data.archive_file.guardrails_source.output.md5, ".zip")
+  name   = format("%s_%s%s", "guardrail", data.archive_file.guardrails_source.output_md5, ".zip")
   bucket = module.guardrails_storage.name
   source = data.archive_file.guardrails_source.output_path
 }
