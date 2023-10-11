@@ -32,6 +32,10 @@ locals {
   }
 }
 
+output "pipeline_encrypters" {
+  value = locals.pipeline_encrypters
+}
+
 module "pipeline_service_identity" {
   source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
   for_each = toset(local.pipeline_services)
