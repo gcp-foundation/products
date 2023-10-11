@@ -3,7 +3,7 @@ locals {
     org-policy = {
       name        = "org-policy"
       log_topic   = "org-poicy"
-      alert_topic = ""
+      alert_topic = "guardrails-alert"
     }
   }
   log_sinks = {
@@ -107,7 +107,7 @@ module "guardrails_log_sink" {
 module "guardrails_pubsub_log_topic" {
   source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
   for_each   = local.guardrails
-  name       = "guardrail-${each.value.name}"
+  name       = "guardrail-${each.value.log_topic}"
   project    = local.projects[local.environment.project_guardrails].project_id
   kms_key_id = module.guardrails_kms_key.key_id
 
@@ -129,7 +129,7 @@ module "guardrails_cloudfunction" {
   source_archive_bucket = module.guardrails_storage.name
   source_archive_object = google_storage_bucket_object.guardrails.name
 
-  pubsub_topic_name = module.guardrails_pubsub_log_topic[each.value].name
+  pubsub_topic_name = module.guardrails_pubsub_log_topic[each.value.log_topic].name
   entry_point       = "event_handler"
   kms_key_id        = module.guardrails_kms_key.key_id
   docker_repository = module.guardrails_artifact_registry.id
