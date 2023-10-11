@@ -25,10 +25,10 @@ locals {
   }
 
   guardrails_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com"]
-  other_encrypters = [
+  other_guardrail_encrypters = [
     "serviceAccount:${data.google_storage_project_service_account.guardrails_gcs_account.email_address}"
   ]
-  guardrail_encrypters = concat([for identity in module.guardrails_service_identity : "serviceAccount:${identity.email}"], local.other_encrypters)
+  guardrail_encrypters = concat([for identity in module.guardrails_service_identity : "serviceAccount:${identity.email}"], local.other_guardrail_encrypters)
 }
 
 module "guardrails_service_identity" {
