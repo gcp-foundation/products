@@ -134,7 +134,7 @@ module "guardrails_cloudfunction" {
   description = "Guardrail for ${each.value.name}"
   runtime     = "python311"
 
-  service_account_email = module.service_account[each.value.name].id
+  service_account_email = module.service_account[each.value.name].email
 
   source_archive_bucket = module.guardrails_storage.name
   source_archive_object = google_storage_bucket_object.guardrails.name
