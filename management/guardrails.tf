@@ -30,7 +30,7 @@ locals {
     }
   }
 
-  guardrails_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com"]
+  guardrails_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com", "cloudfunctions.googleapis.com"]
   other_guardrails_encrypters = [
     "serviceAccount:${data.google_storage_project_service_account.guardrails_gcs_account.email_address}"
   ]
