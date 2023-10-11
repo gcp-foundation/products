@@ -53,3 +53,8 @@ folders:
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
     - cloudkms.googleapis.com             # - For CMEK keys
+    - storage.googleapis.com              # - For cloud functions
+    - artifactregistry.googleapis.com     # - For cloud functions
+    - pubsub.googleapis.com               # - For cloud functions
+    - cloudbuild.googleapis.com           # - For cloud functions
+    - cloudfunctions.googleapis.com       # - For guardrails
