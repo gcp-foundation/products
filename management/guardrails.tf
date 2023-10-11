@@ -114,6 +114,16 @@ module "guardrails_pubsub_log_topic" {
   depends_on = [module.guardrails_kms_key.encrypters]
 }
 
+module "service_account" {
+  source   = "github.com/gcp-foundation/modules//iam/service_account?ref=0.0.1"
+  for_each = local.guardrails
+
+  name         = "sa-guardrail-${each.value.name}"
+  display_name = "Guardrail Service Account - ${each.value.name}"
+  description  = "Service Account for ${each.value.name} guardrail"
+  project      = local.projects[local.environment.project_guardrails].project_id
+}
+
 module "guardrails_cloudfunction" {
   source   = "github.com/gcp-foundation/modules//compute/cloudfunction?ref=0.0.1"
   for_each = local.guardrails
@@ -124,7 +134,7 @@ module "guardrails_cloudfunction" {
   description = "Guardrail for ${each.value.name}"
   runtime     = "python311"
 
-  service_account_email = "sa-guardrail-${each.value.name}@${local.projects[local.environment.project_guardrails].number}.iam.gserviceaccount.com"
+  service_account_email = module.service_account[each.value.name].id
 
   source_archive_bucket = module.guardrails_storage.name
   source_archive_object = google_storage_bucket_object.guardrails.name
