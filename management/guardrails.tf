@@ -1,9 +1,15 @@
 locals {
-  guardrails = ["org_policy"]
+  guardrails = {
+    org_policy = {
+      name        = "org-policy"
+      log_topic   = "org-poicy"
+      alert_topic = ""
+    }
+  }
   log_sinks = {
     org_policy = {
-      name   = "org_policy"
-      topic  = "org_policy"
+      name   = "org-policy"
+      topic  = "org-policy"
       filter = <<EOT
           ( ( protoPayload.serviceName=("orgpolicy.googleapis.com") AND
               protoPayload.methodName=(
@@ -25,10 +31,10 @@ locals {
   }
 
   guardrails_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com"]
-  other_guardrail_encrypters = [
+  other_guardrails_encrypters = [
     "serviceAccount:${data.google_storage_project_service_account.guardrails_gcs_account.email_address}"
   ]
-  guardrail_encrypters = concat([for identity in module.guardrails_service_identity : "serviceAccount:${identity.email}"], local.other_guardrail_encrypters)
+  guardrails_encrypters = concat([for identity in module.guardrails_service_identity : "serviceAccount:${identity.email}"], local.other_guardrails_encrypters)
 }
 
 module "guardrails_service_identity" {
@@ -72,7 +78,7 @@ data "archive_file" "guardrails_source" {
 resource "google_storage_bucket_object" "guardrails" {
   name   = format("%s_%s%s", "guardrail", data.archive_file.source.output.md5, ".zip")
   bucket = modules.guardrails_storage.name
-  source = data.archive_file.source_output_path
+  source = data.archive_file.guardrails_source.source_output_path
 }
 
 module "guardrails_artifact_registry" {
@@ -91,31 +97,31 @@ module "guardrails_artifact_registry" {
 module "guardrails_log_sink" {
   source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
   for_each         = local.log_sinks
-  name             = each.value.name
+  name             = "guardrail-${each.value.name}"
   org_id           = local.organization_id
   include_children = true
   destination      = "pubsub.googleapis.com/projects/${local.projects[local.environment.project_guardrails].project_id}/topics/${module.guardrails_pubsub_log_topic[each.value.topic].name}"
   filter           = each.value.filter
 }
 
-module "guardrail_pubsub_log_topic" {
+module "guardrails_pubsub_log_topic" {
   source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
   for_each   = local.guardrails
-  name       = each.value
+  name       = "guardrail-${each.value.name}"
   project    = local.projects[local.environment.project_guardrails].project_id
   kms_key_id = module.guardrails_kms_key.key_id
 
   depends_on = [module.guardrails_kms_key.encrypters]
 }
 
-module "cloudfunction" {
+module "guardrails_cloudfunction" {
   source   = "github.com/gcp-foundation/modules//compute/cloudfunction?ref=0.0.1"
   for_each = local.guardrails
   project  = local.projects[local.environment.project_guardrails].project_id
   location = var.location
 
-  name        = each.value
-  description = "Guardrail for ${local.guardrails}"
+  name        = "guardrail-${each.value.name}"
+  description = "Guardrail for ${each.value.name}"
   runtime     = "python311"
 
   service_account_email = "sa-guardrail-${each.value.name}@${local.projects[local.environent.project_guardrails].number}.iam.gserviceaccount.com"
@@ -135,7 +141,7 @@ module "cloudfunction" {
 
 module "guardrail_pubsub_topic_alerts" {
   source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
-  name       = "guardrail-alerts"
+  name       = "guardrails-alert"
   project    = local.projects[local.environment.project_guardrails].project_id
   kms_key_id = module.guardrails_kms_key.key_id
 
