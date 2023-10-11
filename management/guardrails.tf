@@ -1,13 +1,13 @@
 locals {
   guardrails = {
-    org_policy = {
+    org-policy = {
       name        = "org-policy"
       log_topic   = "org-poicy"
       alert_topic = ""
     }
   }
   log_sinks = {
-    org_policy = {
+    org-policy = {
       name   = "org-policy"
       topic  = "org-policy"
       filter = <<EOT
@@ -71,7 +71,7 @@ module "guardrails_storage" {
 
 data "archive_file" "guardrails_source" {
   type        = "zip"
-  source_dir  = abspath("${path.module}/guardrails/src/guardrails")
+  source_dir  = abspath("${path.module}/src/guardrails")
   output_path = "/workspace/guardrails.zip"
 }
 
