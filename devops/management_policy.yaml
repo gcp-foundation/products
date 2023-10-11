@@ -35,5 +35,9 @@ organizations:
     - role: roles/iam.serviceAccountAdmin
       members:
       - ${management_sa}
+    # Maybe scope to individual services?
+    - role: roles/iam.serviceAccountUser
+      members:
+      - ${management_sa}
 folders: []
 projects: []
