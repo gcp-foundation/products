@@ -113,25 +113,6 @@ resource "google_storage_bucket_iam_member" "sa_service_account_billing_admin" {
 */
 
 locals {
-  devops_env = {
-    organization_id = module.organization.org_id
-    devops_sa       = "serviceAccount:${module.service_account["devops"].email}"
-    management_sa   = "serviceAccount:${module.service_account["management"].email}"
-  }
-
-  devops_policy     = yamldecode(templatefile("${path.module}/devops_policy.yaml", local.devops_env))
-  management_policy = yamldecode(templatefile("${path.module}/management_policy.yaml", local.devops_env))
-}
-
-module "devops_iam" {
-  source = "github.com/XBankGCPOrg/gcp-lz-modules//iam/policy"
-
-  policy = local.devops_policy
-}
-
-module "management_iam" {
-  source = "github.com/XBankGCPOrg/gcp-lz-modules//iam/policy"
-
-  policy = local.management_policy
+  iam_policy     = yamldecode("${path.module}/iam_policy.yaml")
 }
 
