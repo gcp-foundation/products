@@ -22,15 +22,15 @@ variable "labels" {
   description = "Labels to apply to all foundation projects"
   type        = map(string)
   default = {
-    environment               = "bootstrap"
-    application_name          = "seed-bootstrap"
-    env_code                  = "b"
-   # business-owner            = "tonstand"
-   # finance-approver          = "afins"
-   # hfm-entity                = "gb4581"
-   # pid                       = "245924"
-   # primary-technical-contact = "davbutla"
-   # project-code              = "245924"
+    environment      = "bootstrap"
+    application_name = "seed-bootstrap"
+    env_code         = "b"
+    # business-owner            = "tonstand"
+    # finance-approver          = "afins"
+    # hfm-entity                = "gb4581"
+    # pid                       = "245924"
+    # primary-technical-contact = "davbutla"
+    # project-code              = "245924"
   }
 }
 
