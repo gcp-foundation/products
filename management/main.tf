@@ -1,3 +1,8 @@
+module "assets" {
+  source = "github.com/gcp-foundation/modules//assets?ref=0.0.1"
+  domain = var.domain
+}
+
 locals {
 
   environment = merge({
@@ -11,4 +16,7 @@ locals {
     project_guardrails = "guardrails"
   }, var.environment)
 
+  organization_id = module.assets.organization_id
+  folders         = module.assets.folders
+  projects        = module.assets.projects
 }
