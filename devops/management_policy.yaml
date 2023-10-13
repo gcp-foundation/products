@@ -32,8 +32,5 @@ organizations:
     - role: roles/cloudfunctions.admin
       members:
       - ${management_sa}
-    - role: roles/iam.serviceAccountAdmin
-      members:
-      - ${management_sa}
 folders: []
 projects: []
