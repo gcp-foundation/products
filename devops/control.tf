@@ -74,36 +74,6 @@ module "service_account" {
   project      = module.projects["devops/${local.environment.project_control}"].project_id
 }
 
-resource "google_project_iam_member" "sa_project_log_writer" {
-  for_each = local.service_accounts
-  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
-  role     = "roles/logging.logWriter"
-  member   = "serviceAccount:${module.service_account[each.key].email}"
-}
-
-resource "google_project_iam_member" "sa_project_source_reader" {
-  for_each = local.service_accounts
-  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
-  role     = "roles/source.reader"
-  member   = "serviceAccount:${module.service_account[each.key].email}"
-}
-
-resource "google_project_iam_member" "sa_project_builder" {
-  for_each = local.service_accounts
-  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
-  role     = "roles/cloudbuild.builds.builder"
-  member   = "serviceAccount:${module.service_account[each.key].email}"
-}
-
-resource "google_artifact_registry_repository_iam_member" "sa-project-artifact-reader" {
-  for_each   = local.service_accounts
-  project    = module.artifact_registry.project
-  location   = module.artifact_registry.location
-  repository = module.artifact_registry.name
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${module.service_account[each.key].email}"
-}
-
 resource "google_service_account_iam_member" "sa_service_account_user" {
   for_each           = local.service_accounts
   service_account_id = module.service_account[each.key].name
@@ -116,21 +86,6 @@ resource "google_service_account_iam_member" "sa_service_account_token_creator" 
   service_account_id = module.service_account[each.key].name
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:${module.service_account[each.key].email}"
-}
-
-resource "google_service_account_iam_member" "sa_cloudbuild_token_creator" {
-  for_each           = local.service_accounts
-  service_account_id = module.service_account[each.key].name
-  role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:service-${module.projects["devops/${local.environment.project_pipelines}"].number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"
-}
-
-# Change this to object admin
-resource "google_storage_bucket_iam_member" "sa_service_account_output_storage_admin" {
-  for_each = local.service_accounts
-  bucket   = module.build_output.name
-  role     = "roles/storage.admin"
-  member   = "serviceAccount:${module.service_account[each.key].email}"
 }
 
 # Change this to object admin
