@@ -124,13 +124,13 @@ locals {
 }
 
 module "devops_iam" {
-  source = "github.com/gcp-foundation/modules//iam/policy?ref=0.0.1"
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//iam/policy"
 
   policy = local.devops_policy
 }
 
 module "management_iam" {
-  source = "github.com/gcp-foundation/modules//iam/policy?ref=0.0.1"
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//iam/policy"
 
   policy = local.management_policy
 }
