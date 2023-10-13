@@ -13,10 +13,9 @@ variable "location" {
   type        = string
 }
 
-variable "cloudbuild_sha" {
-  description = "The sha of the cloudbuild image to use for pipelines (known after first apply)"
-  type        = string
-  default     = "" # for first build only
+variable "authorized_repositories" {
+  type        = map(string)
+  description = "Repository information. eg: your_org/your_repository"
 }
 
 variable "labels" {
@@ -26,12 +25,12 @@ variable "labels" {
     environment               = "bootstrap"
     application_name          = "seed-bootstrap"
     env_code                  = "b"
-    business-owner            = "tonstand"
-    finance-approver          = "afins"
-    hfm-entity                = "gb4581"
-    pid                       = "245924"
-    primary-technical-contact = "davbutla"
-    project-code              = "245924"
+   # business-owner            = "tonstand"
+   # finance-approver          = "afins"
+   # hfm-entity                = "gb4581"
+   # pid                       = "245924"
+   # primary-technical-contact = "davbutla"
+   # project-code              = "245924"
   }
 }
 

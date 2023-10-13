@@ -1,7 +1,20 @@
 locals {
+  pipeline_services         = ["artifactregistry.googleapis.com"]
   control_services         = []
   other_control_encrypters = ["serviceAccount:${data.google_storage_project_service_account.control_gcs_account.email_address}"]
   control_encrypters       = concat([for identity in module.control_service_identity : "serviceAccount:${identity.email}"], local.other_control_encrypters)
+  service_accounts = {
+    devops : {
+      name : "devops"
+      display_name : "Devops Pipeline Service Account"
+      description : "Service Account for the devops pipeline"
+    },
+    management : {
+      name : "management"
+      display_name : "Management Pipeline Service Account"
+      description : "Service Account for the management pipeline"
+    }
+  }
 }
 
 module "control_service_identity" {

@@ -26,5 +26,6 @@ organizations:
     - role: roles/iam.workloadIdentityPoolAdmin
       members:
       - ${devops_sa}
+
 folders: []
 projects: []
