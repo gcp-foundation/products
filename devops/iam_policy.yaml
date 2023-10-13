@@ -5,51 +5,33 @@ organizations:
     - role: roles/resourcemanager.organizationAdmin
       members:
       - devops_sa
-      - management_sa
+      # # - management_sa
     - role: roles/orgpolicy.policyAdmin
       members:
       - devops_sa
-      - management_sa
+      # - management_sa
     - role: roles/serviceusage.serviceUsageAdmin
       members:
       - devops_sa
     - role: roles/iam.serviceAccountAdmin
       members:
       - devops_sa
-      - management_sa
+      # - management_sa
     - role: roles/cloudkms.admin
       members:
       - devops_sa
-      - management_sa
+      # - management_sa
     - role: roles/artifactregistry.admin
       members:
       - devops_sa
-      - management_sa
+      # - management_sa
     - role: roles/storage.admin
       members:
       - devops_sa
-      - management_sa
+      # - management_sa
     - role: roles/iam.workloadIdentityPoolAdmin
       members:
       - devops_sa
-    - role: roles/cloudasset.viewer
-      members:
-      - management_sa
-    - role: roles/logging.admin
-      members:
-      - management_sa
-    - role: roles/pubsub.admin
-      members:
-      - management_sa
-    - role: roles/bigquery.admin
-      members:
-      - management_sa
-    - role: roles/cloudfunctions.admin
-      members:
-      - management_sa
-    - role: roles/iam.serviceAccountUser
-      members:
-      - management_sa
 
 folders: []
 projects: []
