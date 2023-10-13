@@ -36,4 +36,9 @@ organizations:
       members:
       - ${management_sa}
 folders: []
-projects: []
+projects: 
+- name: ${guardrails.project_id}
+  iamPolicy: 
+  - role: roles/iam.serviceAccountAdmin
+    members:
+    - ${management_sa}
