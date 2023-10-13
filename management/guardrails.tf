@@ -72,7 +72,7 @@ module "guardrails_storage" {
 data "archive_file" "guardrails_source" {
   type        = "zip"
   source_dir  = abspath("${path.module}/src/guardrails")
-  output_path = "/workspace/guardrails.zip"
+  output_path = "${path.module}/guardrails.zip"
 }
 
 resource "google_storage_bucket_object" "guardrails" {
