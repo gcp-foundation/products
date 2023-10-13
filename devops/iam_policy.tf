@@ -5,7 +5,7 @@ locals {
         for member in binding.members : {
           org_id = organization.name
           role   = binding.role
-          member = member
+          member = toset(member)
         }
       ]
     ]
@@ -18,7 +18,7 @@ locals {
         for member in binding.members : {
           folder_id = folder.name
           role      = binding.role
-          member    = member
+          member    = toset(member)
         }
       ]
     ]
@@ -31,7 +31,7 @@ locals {
         for member in binding.members : {
           project_id = project.name
           role       = binding.role
-          member     = member
+          member     = toset(member)
         }
       ]
     ]
