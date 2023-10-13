@@ -4,52 +4,52 @@ organizations:
     bindings:
     - role: roles/resourcemanager.organizationAdmin
       members:
-      - devops_sa
-      - management_sa
+      - devops
+      - management
     - role: roles/orgpolicy.policyAdmin
       members:
-      - devops_sa
-      - management_sa
+      - devops
+      - management
     - role: roles/serviceusage.serviceUsageAdmin
       members:
-      - devops_sa
+      - devops
     - role: roles/iam.serviceAccountAdmin
       members:
-      - devops_sa
-      - management_sa
+      - devops
+      - management
     - role: roles/cloudkms.admin
       members:
-      - devops_sa
-      - management_sa
+      - devops
+      - management
     - role: roles/artifactregistry.admin
       members:
-      - devops_sa
-      - management_sa
+      - devops
+      - management
     - role: roles/storage.admin
       members:
-      - devops_sa
-      - management_sa
+      - devops
+      - management
     - role: roles/iam.workloadIdentityPoolAdmin
       members:
-      - devops_sa
+      - devops
     - role: roles/cloudasset.viewer
       members:
-      - management_sa
+      - management
     - role: roles/logging.admin
       members:
-      - management_sa
+      - management
     - role: roles/pubsub.admin
       members:
-      - management_sa
+      - management
     - role: roles/bigquery.admin
       members:
-      - management_sa
+      - management
     - role: roles/cloudfunctions.admin
       members:
-      - management_sa
+      - management
     - role: roles/iam.serviceAccountUser
       members:
-      - management_sa
+      - management
 
 
 
