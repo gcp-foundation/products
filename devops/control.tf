@@ -113,6 +113,6 @@ resource "google_storage_bucket_iam_member" "sa_service_account_billing_admin" {
 */
 
 locals {
-  iam_policy     = yamldecode("${path.module}/iam_policy.yaml")
+  iam_policy = yamldecode("${path.module}/iam_policy.yaml")
 }
 
