@@ -2,11 +2,12 @@ locals {
   organization_bindings = flatten([
     for organization in local.iam_policy.organizations : [
       for binding in organization.iamPolicy.bindings : [
-        for member in binding.members : {
-          org_id = organization.name
-          role   = binding.role
-          member = member
-        }
+        for members in binding.members : [
+          for member in members : {
+            org_id = organization.name
+            role   = binding.role
+            member = member
+        }]
       ]
     ]
   ])
@@ -15,11 +16,12 @@ locals {
   folder_bindings = flatten([
     for folder in local.iam_policy.folders : [
       for binding in folder.iamPolicy.bindings : [
-        for member in binding.members : {
-          folder_id = folder.name
-          role      = binding.role
-          member    = member
-        }
+        for member in binding.members : [
+          for member in members : {
+            folder_id = folder.name
+            role      = binding.role
+            member    = member
+        }]
       ]
     ]
   ])
@@ -28,11 +30,12 @@ locals {
   project_bindings = flatten([
     for project in local.iam_policy.projects : [
       for binding in project.iamPolicy.bindings : [
-        for member in binding.members : {
-          project_id = project.name
-          role       = binding.role
-          member     = member
-        }
+        for member in binding.members : [
+          for member in members : {
+            project_id = project.name
+            role       = binding.role
+            member     = member
+        }]
       ]
     ]
   ])
