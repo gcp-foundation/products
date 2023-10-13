@@ -2,7 +2,7 @@ locals {
   organization_bindings = flatten([
     for organization in local.iam_policy.organizations : [
       for binding in organization.iamPolicy.bindings : [
-        for members in binding.members : {
+        for member in binding.members : {
           org_id = organization.name
           role   = binding.role
           member = member
