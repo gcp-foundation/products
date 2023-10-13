@@ -43,7 +43,7 @@ resource "google_organization_iam_member" "organization" {
 
   org_id = module.organization.org_id
   role   = each.value.role
-  member = "serviceAccount:module.service_account[${each.value.member}].email"
+  member = "serviceAccount:${module.service_account[each.value.member].email}"
 }
 
 resource "google_folder_iam_member" "folder" {
@@ -51,7 +51,7 @@ resource "google_folder_iam_member" "folder" {
 
   folder = module.folders[each.value.folder_id].id
   role   = each.value.role
-  member = "serviceAccount:module.service_account[${each.value.member}].email"
+  member = "serviceAccount:${module.service_account[each.value.member].email}"
 }
 
 resource "google_project_iam_member" "project" {
@@ -59,5 +59,5 @@ resource "google_project_iam_member" "project" {
 
   project = module.projects[each.value.project_id].project
   role    = each.value.role
-  member  = "serviceAccount:module.service_account[${each.value.member}].email"
+  member  = "serviceAccount:${module.service_account[each.value.member].email}"
 }
