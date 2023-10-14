@@ -1,11 +1,11 @@
-output "organization_id" {
-  value = module.organization
-}
+# output "organization_id" {
+#   value = module.organization
+# }
 
-output "folders" {
-  value = module.folders
-}
+# output "folders" {
+#   value = module.folders
+# }
 
-output "projects" {
-  value = module.projects
-}
+# output "projects" {
+#   value = module.projects
+# }

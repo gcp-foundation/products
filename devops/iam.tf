@@ -7,10 +7,10 @@ locals {
 
     projects = {
       for project in module.projects :
-      project.display_name => { project_id = substr(project.name, 47, -1), number = substr(project.project, 9, -1) }
+      project.name => { project_id = project.project_id, number = project.number }
     }
     folders = {
-      for folder in module.folders : folder.display_name => substr(folder.name, 46, -1)
+      for folder in module.folders : folder.display_name => folder.folder_id
     }
   }
 

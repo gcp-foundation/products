@@ -2,6 +2,7 @@ locals {
 
   environment = merge({
     domain             = var.domain
+    organization_id    = "715048305958"
     billingAccount     = var.billing_account
     folder_devops      = "devops"
     folder_management  = "management"
@@ -46,3 +47,7 @@ module "projects" {
   labels          = var.labels
 }
 
+# moved {
+#   from     = module.projects[each.key]
+#   to       = module.projects[entry.project.displayName]
+# }
