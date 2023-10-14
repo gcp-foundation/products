@@ -7,5 +7,5 @@ output "folders" {
 }
 
 output "projects" {
-  value = modules.projects
+  value = module.projects
 }

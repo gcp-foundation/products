@@ -4,12 +4,13 @@ locals {
     organization_id = module.organization.org_id
     devops_sa       = "serviceAccount:${module.service_account["devops"].email}"
     management_sa   = "serviceAccount:${module.service_account["management"].email}"
+
     projects = {
       for project in module.projects :
       project.display_name => { project_id = substr(project.name, 47, -1), number = substr(project.project, 9, -1) }
     }
     folders = {
-      for folder in data.google_cloud_asset_resources_search_all.folders.results : folder.display_name => substr(folder.name, 46, -1)
+      for folder in module.folders : folder.display_name => substr(folder.name, 46, -1)
     }
   }
 
@@ -22,7 +23,7 @@ module "devops_iam" {
 
   policy = local.devops_policy
 
-  depends_on = [modules.projects]
+  depends_on = [module.projects]
 }
 
 module "management_iam" {
@@ -30,6 +31,6 @@ module "management_iam" {
 
   policy = local.management_policy
 
-  depends_on = [modules.projects]
+  depends_on = [module.projects]
 }
 
