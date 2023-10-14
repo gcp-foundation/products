@@ -38,7 +38,7 @@ locals {
 }
 
 module "guardrails_service_identity" {
-  source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//resources/service_identity?ref=v0.0.1"
   for_each = toset(local.guardrails_services)
   project  = local.projects[local.environment.project_guardrails].project_id
   service  = each.value
@@ -49,7 +49,7 @@ data "google_storage_project_service_account" "guardrails_gcs_account" {
 }
 
 module "guardrails_kms_key" {
-  source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
+  source        = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
   name          = local.projects[local.environment.project_guardrails].project_id
   key_ring_name = local.projects[local.environment.project_guardrails].project_id
   project       = local.projects[local.environment.project_guardrails].project_id
@@ -59,7 +59,7 @@ module "guardrails_kms_key" {
 }
 
 module "guardrails_storage" {
-  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+  source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=v0.0.1"
   name                = "guardrails"
   project             = local.projects[local.environment.project_guardrails].project_id
   location            = var.location
@@ -82,7 +82,7 @@ resource "google_storage_bucket_object" "guardrails" {
 }
 
 module "guardrails_artifact_registry" {
-  source = "github.com/gcp-foundation/modules//devops/artifact_registry?ref=0.0.1"
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//devops/artifact_registry?ref=v0.0.1"
 
   name        = "guardrails"
   description = "Docker containers for guardrail cloudfunctions"
@@ -95,7 +95,7 @@ module "guardrails_artifact_registry" {
 }
 
 module "guardrails_log_sink" {
-  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  source           = "github.com/XBankGCPOrg/gcp-lz-modules//log_sink?ref=v0.0.1"
   for_each         = local.log_sinks
   name             = "guardrail-${each.value.name}"
   org_id           = local.organization_id
@@ -105,7 +105,7 @@ module "guardrails_log_sink" {
 }
 
 module "guardrails_pubsub_log_topic" {
-  source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
+  source     = "github.com/XBankGCPOrg/gcp-lz-modules//pubsub/topic?ref=v0.0.1"
   for_each   = local.guardrails
   name       = "guardrail-${each.value.log_topic}"
   project    = local.projects[local.environment.project_guardrails].project_id
@@ -123,7 +123,7 @@ resource "google_pubsub_topic_iam_member" "guardrails_pubsub_sink_member" {
 }
 
 module "service_account" {
-  source   = "github.com/gcp-foundation/modules//iam/service_account?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/service_account?ref=v0.0.1"
   for_each = local.guardrails
 
   name         = "sa-guardrail-${each.value.name}"
@@ -133,7 +133,7 @@ module "service_account" {
 }
 
 module "guardrails_cloudfunction" {
-  source   = "github.com/gcp-foundation/modules//compute/cloudfunction?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//compute/cloudfunction?ref=v0.0.1"
   for_each = local.guardrails
   project  = local.projects[local.environment.project_guardrails].project_id
   location = var.location
@@ -160,7 +160,7 @@ module "guardrails_cloudfunction" {
 }
 
 module "guardrail_pubsub_topic_alerts" {
-  source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
+  source     = "github.com/XBankGCPOrg/gcp-lz-modules//pubsub/topic?ref=v0.0.1"
   name       = "guardrails-alert"
   project    = local.projects[local.environment.project_guardrails].project_id
   kms_key_id = module.guardrails_kms_key.key_id

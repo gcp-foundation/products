@@ -16,7 +16,7 @@ locals {
 }
 
 module "logging_service_identity" {
-  source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//resources/service_identity?ref=v0.0.1"
   for_each = toset(local.logging_services)
   project  = local.projects[local.environment.project_logging].project_id
   service  = each.value
@@ -27,7 +27,7 @@ data "google_storage_project_service_account" "logging_gcs_account" {
 }
 
 module "logging_kms_key" {
-  source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
+  source        = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
   name          = local.projects[local.environment.project_logging].project_id
   key_ring_name = local.projects[local.environment.project_logging].project_id
   project       = local.projects[local.environment.project_logging].project_id
@@ -38,7 +38,7 @@ module "logging_kms_key" {
 
 # No filter on this log sink ensures all logs are forwarded to the storage bucket
 module "log_sink_all_to_storage" {
-  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  source           = "github.com/XBankGCPOrg/gcp-lz-modules//log_sink?ref=v0.0.1"
   name             = "log_storage"
   org_id           = local.organization_id
   include_children = true
@@ -47,7 +47,7 @@ module "log_sink_all_to_storage" {
 }
 
 module "log_storage" {
-  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+  source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=v0.0.1"
   name                = "log_storage"
   project             = local.projects[local.environment.project_logging].project_id
   location            = var.location
@@ -64,7 +64,7 @@ resource "google_storage_bucket_iam_member" "storage_sink_member" {
 }
 
 module "log_sink_filtered_to_bigquery" {
-  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  source           = "github.com/XBankGCPOrg/gcp-lz-modules//log_sink?ref=v0.0.1"
   name             = "log_bigquery"
   org_id           = local.organization_id
   include_children = true
@@ -77,7 +77,7 @@ module "log_sink_filtered_to_bigquery" {
 }
 
 module "log_bigquery" {
-  source     = "github.com/gcp-foundation/modules//bigquery/dataset?ref=0.0.1"
+  source     = "github.com/XBankGCPOrg/gcp-lz-modules//bigquery/dataset?ref=v0.0.1"
   name       = "log_bigquery"
   project    = local.projects[local.environment.project_logging].project_id
   location   = var.location
@@ -93,7 +93,7 @@ resource "google_project_iam_member" "bigquery_sink_member" {
 }
 
 module "log_sink_filtered_to_pubsub" {
-  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  source           = "github.com/XBankGCPOrg/gcp-lz-modules//log_sink?ref=v0.0.1"
   name             = "log_pubsub"
   org_id           = local.organization_id
   include_children = true
@@ -102,7 +102,7 @@ module "log_sink_filtered_to_pubsub" {
 }
 
 module "log_pubsub_topic" {
-  source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
+  source     = "github.com/XBankGCPOrg/gcp-lz-modules//pubsub/topic?ref=v0.0.1"
   name       = "log_pubsub"
   project    = local.projects[local.environment.project_logging].project_id
   kms_key_id = module.logging_kms_key.key_id

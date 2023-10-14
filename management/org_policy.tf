@@ -19,7 +19,7 @@ locals {
 }
 
 module "organization_policy" {
-  source   = "github.com/gcp-foundation/modules//iam/org_policy?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/org_policy?ref=v0.0.1"
   parent   = "organizations/${local.organization_id}"
   policies = local.organization_policies
 }

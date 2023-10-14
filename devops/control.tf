@@ -18,7 +18,7 @@ locals {
 }
 
 module "control_service_identity" {
-  source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//resources/service_identity?ref=v0.0.1"
   for_each = toset(local.pipeline_services)
   project  = module.projects["devops/${local.environment.project_control}"].project_id
   service  = each.value
@@ -42,7 +42,7 @@ data "google_storage_project_service_account" "control_gcs_account" {
 }
 
 module "control_kms_key" {
-  source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
+  source        = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
   name          = module.projects["devops/${local.environment.project_control}"].project_id
   key_ring_name = module.projects["devops/${local.environment.project_control}"].project_id
   project       = module.projects["devops/${local.environment.project_control}"].project_id
@@ -54,7 +54,7 @@ module "control_kms_key" {
 }
 
 module "state_files" {
-  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+  source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=v0.0.1"
   name                = "tfstate"
   project             = module.projects["devops/${local.environment.project_control}"].project_id
   location            = var.location
@@ -65,7 +65,7 @@ module "state_files" {
 }
 
 module "service_account" {
-  source   = "github.com/gcp-foundation/modules//iam/service_account?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/service_account?ref=v0.0.1"
   for_each = local.service_accounts
 
   name         = "sa-${each.value.name}"
