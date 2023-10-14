@@ -7,7 +7,7 @@ locals {
     logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
   EOF
 
-  logging_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com", "bigquery.googleapis.com"]
+  logging_services = ["pubsub.googleapis.com", "artifactregistry.googleapis.com"]
   other_logging_encrypters = [
     "serviceAccount:${data.google_storage_project_service_account.logging_gcs_account.email_address}",
     "serviceAccount:bq-${local.projects[local.environment.project_logging].number}@bigquery-encryption.iam.gserviceaccount.com"
@@ -15,11 +15,18 @@ locals {
   logging_encrypters = concat([for identity in module.logging_service_identity : "serviceAccount:${identity.email}"], local.other_logging_encrypters)
 }
 
+module "logging_service_identity_for_bigquerry" {
+  source  = "github.com/XBankGCPOrg/gcp-lz-modules//resources/service_identity?ref=v0.0.1"
+  project = local.projects[local.environment.project_logging].project_id
+  service = "bigquery.googleapis.com"
+}
+
 module "logging_service_identity" {
-  source   = "github.com/XBankGCPOrg/gcp-lz-modules//resources/service_identity?ref=v0.0.1"
-  for_each = toset(local.logging_services)
-  project  = local.projects[local.environment.project_logging].project_id
-  service  = each.value
+  source     = "github.com/XBankGCPOrg/gcp-lz-modules//resources/service_identity?ref=v0.0.1"
+  for_each   = toset(local.logging_services)
+  project    = local.projects[local.environment.project_logging].project_id
+  service    = each.value
+  depends_on = [module.logging_service_identity_for_bigquerry]
 }
 
 data "google_storage_project_service_account" "logging_gcs_account" {
