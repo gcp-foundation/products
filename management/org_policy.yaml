@@ -3,4 +3,4 @@ orgPolicy:
 - name: compute.restrictCloudNATUsage
   spec:                                     
     rules:
-    - allowAll: false
+    - denyAll: true
