@@ -1,6 +1,119 @@
 displayName: ${domain}
-orgPolicy:
+orgPolicy:                                
+- name: compute.disableAllIpv6
+  spec:                                   
+    rules:
+    - enforce: true
+- name: compute.restrictXpnProjectLienRemoval
+  spec:                                  
+    rules:
+    - enforce: true
+- name: compute.disableSerialPortAccess
+  spec:                                    
+    rules:
+    - enforce: true
+- name: compute.restrictDedicatedInterconnectUsage
+  spec:                                    
+    rules:
+    - denyAll: false
+- name: compute.restrictPartnerInterconnectUsage
+  spec:                                    
+    rules:
+    - denyAll: false
+- name: compute.restrictLoadBalancerCreationForTypes
+  spec:                                     
+    rules:
+    - denyAll: false
 - name: compute.restrictCloudNATUsage
   spec:                                     
     rules:
-    - denyAll: true
+    - denyAll: false
+- name: sql.restrictPublicIp
+  spec:                                   
+    rules:
+    - enforce: true
+- name: compute.disableInternetNetworkEndpointGroup
+  spec:                                   
+    rules:
+    - enforce: true
+- name: compute.vmCanIpForward
+  spec:                                   
+    rules:
+    - denyAll: false
+- name: compute.restrictVpcPeering
+  spec:                                   
+    rules:
+    - denyAll: false
+- name: compute.restrictVpnPeerIPs
+  spec:                                     
+    rules:
+    - denyAll: false
+- name: compute.disableGuestAttributesAccess
+  spec:                                    
+    rules:
+    - enforce: true
+- name: compute.disableNestedVirtualization
+  spec:   
+    rules:
+    - enforce: true
+- name: storage.uniformBucketLevelAccess
+  spec:                                   
+    rules:
+    - enforce: true
+# - name: essentialcontacts.allowedContactDomains
+#   spec:   
+#     inheritFromParent: false                                  
+#     rules:
+#     - enforce: true
+# - name: cloudfunctions.requireVPCConnector
+#   spec:   
+#     inheritFromParent: false                                  
+#     rules:
+#     - enforce: true
+# - name: cloudfunctions.allowedVpcConnectorEgressSettings
+#   spec: 
+#     inheritFromParent: false                                    
+#     rules:
+#     - enforce: true
+# - name: cloudfunctions.allowedIngressSettings
+#   spec:    
+#     inheritFromParent: false                                 
+#     rules:
+#     - enforce: true
+# - name: run.allowedVPCEgress
+#   spec:  
+#     inheritFromParent: false                                   
+#     rules:
+#     - enforce: true
+# - name: run.allowedIngress
+#   spec: 
+#     inheritFromParent: false                                    
+#     rules:
+#     - enforce: true
+# - name: compute.vmExternalIpAccess
+#   spec:  
+#     inheritFromParent: false                                   
+#     rules:
+#     - enforce: true
+# - name: compute.skipDefaultNetworkCreation
+#   spec:    
+#     inheritFromParent: false                                 
+#     rules:
+#     - enforce: true
+# - name: gcp.detailedAuditLoggingMode
+#   spec:   
+#     inheritFromParent: false                                  
+#     rules:
+#     - enforce: true
+# - name: compute.requireShieldedVm
+#   spec:  
+#     inheritFromParent: false                                   
+#     rules:
+#     - enforce: true
+# - name: iam.allowedPolicyMemberDomains
+#   spec:
+#     inheritFromParent: false                                   
+#     rules:
+#     - enforce: true
+folders: []
+projects: []
