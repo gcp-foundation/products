@@ -15,19 +15,19 @@ orgPolicy:
 - name: compute.restrictDedicatedInterconnectUsage
   spec:                                    
     rules:
-    - denyAll: false
+    - denyAll: true
 - name: compute.restrictPartnerInterconnectUsage
   spec:                                    
     rules:
-    - denyAll: false
+    - denyAll: true
 - name: compute.restrictLoadBalancerCreationForTypes
   spec:                                     
     rules:
-    - denyAll: false
+    - denyAll: true
 - name: compute.restrictCloudNATUsage
   spec:                                     
     rules:
-    - denyAll: false
+    - denyAll: true
 - name: sql.restrictPublicIp
   spec:                                   
     rules:
@@ -39,15 +39,15 @@ orgPolicy:
 - name: compute.vmCanIpForward
   spec:                                   
     rules:
-    - denyAll: false
+    - denyAll: true
 - name: compute.restrictVpcPeering
   spec:                                   
     rules:
-    - denyAll: false
+    - denyAll: true
 - name: compute.restrictVpnPeerIPs
   spec:                                     
     rules:
-    - denyAll: false
+    - denyAll: true
 - name: compute.disableGuestAttributesAccess
   spec:                                    
     rules:
