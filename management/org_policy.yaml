@@ -76,10 +76,6 @@ orgPolicy:
   spec:                                     
     rules:
     - enforce: true
-- name: storage.uniformBucketLevelAccess
-  spec:                                     
-    rules:
-    - enforce: true
 - name: cloudfunctions.requireVPCConnector
   spec:                                     
     rules:
