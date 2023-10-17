@@ -4,5 +4,121 @@ orgPolicy:
   spec:                                     
     rules:
     - enforce: true
+- name: compute.restrictXpnProjectLienRemoval
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.disableSerialPortAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.restrictDedicatedInterconnectUsage
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.restrictPartnerInterconnectUsage
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.restrictLoadBalancerCreationForTypes
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.restrictCloudNATUsage
+  spec:                                     
+    rules:
+    - enforce: true
+- name: sql.restrictPublicIp
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.disableInternetNetworkEndpointGroup
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.vmCanIpForward
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.restrictVpcPeering
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.restrictVpnPeerIPs
+  spec:                                     
+    rules:
+    - enforce: true
+- name: iam.automaticIamGrantsForDefaultServiceAccounts
+  spec:                                     
+    rules:
+    - enforce: true
+- name: iam.disableCrossProjectServiceAccountUsage
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.disableGuestAttributesAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.disableNestedVirtualization
+  spec:                                     
+    rules:
+    - enforce: true
+- name: storage.uniformBucketLevelAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: cloudfunctions.requireVPCConnector
+  spec:                                     
+    rules:
+    - enforce: true
+- name: essentialcontacts.allowedContactDomains
+  spec:                                     
+    rules:
+    - enforce: true
+- name: storage.uniformBucketLevelAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: cloudfunctions.requireVPCConnector
+  spec:                                     
+    rules:
+    - enforce: true
+- name: cloudfunctions.allowedVpcConnectorEgressSettings
+  spec:                                     
+    rules:
+    - enforce: true
+- name: cloudfunctions.allowedIngressSettings
+  spec:                                     
+    rules:
+    - enforce: true
+- name: run.allowedVPCEgress
+  spec:                                     
+    rules:
+    - enforce: true
+- name: run.allowedIngress
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.vmExternalIpAccess
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.skipDefaultNetworkCreation
+  spec:                                     
+    rules:
+    - enforce: true
+- name: gcp.detailedAuditLoggingMode
+  spec:                                     
+    rules:
+    - enforce: true
+- name: compute.requireShieldedVm
+  spec:                                     
+    rules:
+    - enforce: true
+- name: iam.allowedPolicyMemberDomains
+  spec:                                     
+    rules:
+    - enforce: true
 folders: []
 projects: []
