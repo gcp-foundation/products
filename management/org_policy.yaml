@@ -3,114 +3,142 @@ orgPolicy:
 - name: compute.disableAllIpv6
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.restrictXpnProjectLienRemoval
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.disableSerialPortAccess
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.restrictDedicatedInterconnectUsage
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.restrictPartnerInterconnectUsage
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.restrictLoadBalancerCreationForTypes
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.restrictCloudNATUsage
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: sql.restrictPublicIp
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.disableInternetNetworkEndpointGroup
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.vmCanIpForward
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.restrictVpcPeering
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.restrictVpnPeerIPs
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: iam.automaticIamGrantsForDefaultServiceAccounts
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: iam.disableCrossProjectServiceAccountUsage
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.disableGuestAttributesAccess
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.disableNestedVirtualization
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: storage.uniformBucketLevelAccess
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: essentialcontacts.allowedContactDomains
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: cloudfunctions.requireVPCConnector
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: cloudfunctions.allowedVpcConnectorEgressSettings
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: cloudfunctions.allowedIngressSettings
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: run.allowedVPCEgress
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: run.allowedIngress
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.vmExternalIpAccess
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.skipDefaultNetworkCreation
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: gcp.detailedAuditLoggingMode
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: compute.requireShieldedVm
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 - name: iam.allowedPolicyMemberDomains
   spec:                                     
     rules:
+    - inheritFromParent: false
     - enforce: true
 folders: []
 projects: []
