@@ -68,10 +68,6 @@ orgPolicy:
   spec:                                     
     rules:
     - enforce: true
-- name: cloudfunctions.requireVPCConnector
-  spec:                                     
-    rules:
-    - enforce: true
 - name: essentialcontacts.allowedContactDomains
   spec:                                     
     rules:
