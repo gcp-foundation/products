@@ -1,8 +1,8 @@
 displayName: ${domain}
 folders:
-- displayName : ${folder_devops}
+- displayName : devops
   projects:
-  - displayName: ${project_control}
+  - displayName: control
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
@@ -18,9 +18,9 @@ folders:
     - bigquery.googleapis.com             # - Required for running terraform
     - bigquerymigration.googleapis.com    # - Enabled by google as dependency
     - bigquerystorage.googleapis.com      # - Enabled by google as dependency
-- displayName: ${folder_management}
+- displayName: management
   projects:
-  - displayName: ${project_logging}
+  - displayName: logging
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
@@ -28,12 +28,12 @@ folders:
     - bigquery.googleapis.com             # - For logging to bigquery
     - bigquerymigration.googleapis.com    # - Enabled by google as dependency
     - bigquerystorage.googleapis.com      # - Enabled by google as dependency
-  - displayName: ${project_billing}
+  - displayName: billing
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default
     - bigquery.googleapis.com             # - For billing to bigquery
-  - displayName: ${project_guardrails}
+  - displayName: guardrails
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default

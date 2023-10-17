@@ -1,4 +1,6 @@
 locals {
+  iam_policy = yamldecode(file("${path.module}/iam_policy.yaml"))
+
   organization_bindings = flatten([
     for organization in local.iam_policy.organizations : [
       for binding in organization.iamPolicy.bindings : [
