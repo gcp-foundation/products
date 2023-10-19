@@ -16,7 +16,7 @@ module "projects" {
   name            = each.value.displayName
   folder          = flatten([for folder in module.folders.folder_id : values(folder) if contains(keys(folder), each.value.parent)]).0
   services        = each.value.services
-  billing_account = try(each.value.project.billingAccount, var.billingAccount)
+  billing_account = try(each.value.project.billingAccount, var.billing_account)
   labels          = var.labels
 }
 
