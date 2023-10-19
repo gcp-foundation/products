@@ -1,8 +1,7 @@
 locals {
-  iam_policy = yamldecode(file("${path.module}/iam_policy.yaml"))
 
   organization_bindings = flatten([
-    for organization in local.iam_policy.organizations : [
+    for organization in var.iam_policy.organizations : [
       for binding in organization.iamPolicy.bindings : [
         for member in binding.members : {
           org_id = organization.name
@@ -15,7 +14,7 @@ locals {
 
   # Need to add code to cope with missing folders object
   folder_bindings = flatten([
-    for folder in local.iam_policy.folders : [
+    for folder in var.iam_policy.folders : [
       for binding in folder.iamPolicy.bindings : [
         for member in binding.members : {
           folder_id = folder.name
@@ -28,7 +27,7 @@ locals {
 
   # Need to add code to cope with missing projects object
   project_bindings = flatten([
-    for project in local.iam_policy.projects : [
+    for project in var.iam_policy.projects : [
       for binding in project.iamPolicy.bindings : [
         for member in binding.members : {
           project_id = project.name

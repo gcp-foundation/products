@@ -13,9 +13,29 @@ variable "location" {
   type        = string
 }
 
-variable "authorized_repositories" {
-  type        = map(string)
+variable "seed_project_name" {
+  description = "Seed project Name"
+  type        = string
+}
+
+variable "service_accounts" {
+  type        = list(map(string))
   description = "Repository information. eg: your_org/your_repository"
+}
+
+varaible "iam_policy" {
+  type        = any
+  description = "IAM policy binding for WIF service account"
+}
+
+variable "gcs_terraform_bucket_name" {
+  type        = string
+  description = "Terraform GCS bucket name"
+}
+
+variable "organization" {
+  type        = string
+  description = "Terraform GCS bucket name"
 }
 
 variable "labels" {
@@ -32,10 +52,4 @@ variable "labels" {
     # primary-technical-contact = "davbutla"
     # project-code              = "245924"
   }
-}
-
-variable "environment" {
-  description = "Environment specific settings"
-  type        = map(string)
-  default     = {}
 }
