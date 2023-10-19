@@ -42,7 +42,7 @@ module "state_files" {
 
 module "service_account" {
   source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/service_account?ref=v0.0.1"
-  for_each = { for sa in var.service_accounts : sa.name => sa }
+  for_each = { for sa in var.service_accounts.service_accounts : sa.name => sa }
 
   name         = "sa-${each.value.name}"
   display_name = each.value.display_name
@@ -51,14 +51,14 @@ module "service_account" {
 }
 
 resource "google_service_account_iam_member" "sa_service_account_user" {
-  for_each           = { for sa in var.service_accounts : sa.name => sa }
+  for_each           = { for sa in var.service_accounts.service_accounts : sa.name => sa }
   service_account_id = module.service_account[each.key].name
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:${module.service_account[var.seed_project_name].email}"
 }
 
 resource "google_service_account_iam_member" "sa_service_account_token_creator" {
-  for_each           = { for sa in var.service_accounts : sa.name => sa }
+  for_each           = { for sa in var.service_accounts.service_accounts : sa.name => sa }
   service_account_id = module.service_account[each.key].name
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:${module.service_account[var.seed_project_name].email}"
@@ -66,7 +66,7 @@ resource "google_service_account_iam_member" "sa_service_account_token_creator" 
 
 # Change this to object admin
 resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_admin" {
-  for_each = { for sa in var.service_accounts : sa.name => sa }
+  for_each = { for sa in var.service_accounts.service_accounts : sa.name => sa }
   bucket   = module.state_files.name
   role     = "roles/storage.admin"
   member   = "serviceAccount:${module.service_account[var.seed_project_name].email}"

@@ -19,7 +19,7 @@ variable "seed_project_name" {
 }
 
 variable "service_accounts" {
-  type        = list(map(string))
+  type        = map(list(map(string)))
   description = "Repository information. eg: your_org/your_repository"
 }
 
@@ -34,7 +34,7 @@ variable "gcs_terraform_bucket_name" {
 }
 
 variable "organization" {
-  type        = string
+  type        = any
   description = "Terraform GCS bucket name"
 }
 
