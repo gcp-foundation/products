@@ -23,7 +23,7 @@ variable "service_accounts" {
   description = "Repository information. eg: your_org/your_repository"
 }
 
-varaible "iam_policy" {
+variable "iam_policy" {
   type        = any
   description = "IAM policy binding for WIF service account"
 }
