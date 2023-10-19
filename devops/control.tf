@@ -54,14 +54,14 @@ resource "google_service_account_iam_member" "sa_service_account_user" {
   for_each           = { for sa in var.service_accounts.service_accounts : sa.name => sa }
   service_account_id = module.service_account[each.key].name
   role               = "roles/iam.serviceAccountUser"
-  member             = "serviceAccount:${module.service_account[var.seed_project_name].email}"
+  member             = "serviceAccount:${module.service_account[each.key].email}"
 }
 
 resource "google_service_account_iam_member" "sa_service_account_token_creator" {
   for_each           = { for sa in var.service_accounts.service_accounts : sa.name => sa }
   service_account_id = module.service_account[each.key].name
   role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:${module.service_account[var.seed_project_name].email}"
+  member             = "serviceAccount:${module.service_account[each.key].email}"
 }
 
 # Change this to object admin
@@ -69,5 +69,5 @@ resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_ad
   for_each = { for sa in var.service_accounts.service_accounts : sa.name => sa }
   bucket   = module.state_files.name
   role     = "roles/storage.admin"
-  member   = "serviceAccount:${module.service_account[var.seed_project_name].email}"
+  member   = "serviceAccount:${module.service_account[each.key].email}"
 }
