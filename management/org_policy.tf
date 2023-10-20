@@ -7,23 +7,37 @@ locals {
     { policy = policy } if try(policy.exists, false) != true
   ])
 
-  #   folder_names = compact([ 
-  #     for folder in local.organization.folders : lookup( local.folders, folder.displayName, null ) != null ? folder.displayName : null   
-  #   ])
+  folder_policies = {
+    for folder in local.organization.folders : folder.displayName => [
+      for policy in folder.orgPolicy :
+      { policy = policy } if try(policy.exists, false) != true
+    ]
+  }
 
-  #   project_names = compact([
-  #     for project in local.organization.projects : lookup( local.projects, project.name, null ) != null ? project.name : null
-  #   ])
-
-  #   folder_org_policies = flatten([])
+  project_policies = {
+    for project in local.organization.projects : project.displayName => [
+      for policy in project.orgPolicy :
+      { policy = policy } if try(policy.exists, false) != true
+    ]
+  }
 }
 
-# module "organization_policy" {
-#   source   = "github.com/gcp-foundation/modules//iam/org_policy?ref=0.0.1"
-#   parent   = "organizations/${local.organization_id}"
-#   policies = local.organization_policies
-# }
+module "organization_policy" {
+  source   = "github.com/gcp-foundation/modules//iam/org_policy?ref=0.0.2"
+  parent   = "organizations/${local.organization_id}"
+  policies = local.organization_policies
+}
 
-output "organization_policies" {
-  value = local.organization_policies
+module "folder_policies" {
+  source   = "github.com/gcp-foundation/modules//iam/org_policy?ref=0.0.2"
+  for_each = local.folder_policies
+  parent   = "folders/${local.folders[each.key].folder_id}"
+  policies = each.value
+}
+
+module "project_policies" {
+  source   = "github.com/gcp-foundation/modules//iam/org_policy?ref=0.0.2"
+  for_each = local.project_policies
+  parent   = "projects/${local.projects[each.key].project_id}"
+  policies = each.value
 }
