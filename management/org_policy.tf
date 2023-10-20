@@ -24,6 +24,6 @@ locals {
 #   policies = local.organization_policies
 # }
 
-output "local.organization_policies" {
+output "organization_policies" {
   value = local.organization_policies
 }
