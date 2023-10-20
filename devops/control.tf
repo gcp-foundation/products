@@ -4,7 +4,7 @@ locals {
 
 # Uses organization policy V1 to avoid needing to set quota project during bootstrap
 resource "google_project_organization_policy" "iam_disableCrossProjectServiceAccountUsage" {
-  project    = module.projects[var.seed_project_name].project_id
+  project    = module.projects.project_id
   constraint = "iam.disableCrossProjectServiceAccountUsage"
   boolean_policy {
     enforced = false
@@ -12,16 +12,16 @@ resource "google_project_organization_policy" "iam_disableCrossProjectServiceAcc
 }
 
 data "google_storage_project_service_account" "control_gcs_account" {
-  project = module.projects[var.seed_project_name].project_id
+  project = module.projects.project_id
 
   depends_on = [module.projects]
 }
 
 module "control_kms_key" {
   source        = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
-  name          = module.projects[var.seed_project_name].project_id
-  key_ring_name = module.projects[var.seed_project_name].project_id
-  project       = module.projects[var.seed_project_name].project_id
+  name          = module.projects.project_id
+  key_ring_name = module.projects.project_id
+  project       = module.projects.project_id
   location      = var.location
   encrypters    = local.control_encrypters
   decrypters    = local.control_encrypters
@@ -32,7 +32,7 @@ module "control_kms_key" {
 module "state_files" {
   source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=v0.0.1"
   name                = var.gcs_terraform_bucket_name
-  project             = module.projects[var.seed_project_name].project_id
+  project             = module.projects.project_id
   location            = var.location
   data_classification = "terraform_state"
   kms_key_id          = module.control_kms_key.key_id
@@ -47,7 +47,7 @@ module "service_account" {
   name         = "sa-${each.value.name}"
   display_name = each.value.display_name
   description  = each.value.description
-  project      = module.projects[var.seed_project_name].project_id
+  project      = module.projects.project_id
 }
 
 resource "google_service_account_iam_member" "sa_service_account_user" {
@@ -70,4 +70,11 @@ resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_ad
   bucket   = module.state_files.name
   role     = "roles/storage.admin"
   member   = "serviceAccount:${module.service_account[each.key].email}"
+}
+
+resource "google_billing_account_iam_member" "binding" {
+  for_each           = { for sa in var.service_accounts.service_accounts : sa.name => sa if sa.billing_user }
+  billing_account_id = var.billing_account
+  role               = "roles/billing.user"
+  member             = "serviceAccount:${module.service_account[each.key].email}"
 }

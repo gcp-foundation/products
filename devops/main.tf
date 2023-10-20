@@ -1,22 +1,23 @@
 module "organization" {
   source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/organization?ref=v0.0.1"
+
   domain = var.domain
 }
 
 module "folders" {
-  source      = "github.com/XBankGCPOrg/gcp-lz-modules//resources/folder?ref=osttra-release"
-  folder_list = var.organization.folders
-  parent_name = module.organization.name
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/folder?ref=main"
+
+  display_name = var.bootstrap_folder_name
+  parent       = module.organization.name
 }
 
 module "projects" {
-  source   = "github.com/XBankGCPOrg/gcp-lz-modules//resources/project?ref=v0.0.1"
-  for_each = { for entry in var.organization.projects : entry.displayName => entry }
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/project?ref=v0.0.1"
 
-  name            = each.value.displayName
-  folder          = flatten([for folder in module.folders.folder_id : values(folder) if contains(keys(folder), each.value.parent)]).0
-  services        = each.value.services
-  billing_account = try(each.value.billingAccount, var.billing_account)
+  name            = var.seed_project_name
+  folder          = module.folders.name
+  services        = var.enable_apis
+  billing_account = var.billing_account
   labels          = var.labels
 }
 

@@ -1,9 +1,7 @@
 locals {
 
-  organization = yamldecode(templatefile("${path.module}/org_policy.yaml", local.environment))
-
   organization_policies = flatten([
-    for policy in local.organization.orgPolicy :
+    for policy in var.org_policy.orgPolicy :
     { policy = policy } if try(policy.exists, false) != true
   ])
 
@@ -20,7 +18,7 @@ locals {
 
 module "organization_policy" {
   source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/org_policy?ref=v0.0.1"
-  parent   = "organizations/${local.organization_id}"
+  parent   = "organizations/${module.organization.name}"
   policies = local.organization_policies
 }
 

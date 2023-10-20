@@ -9,7 +9,8 @@ data "google_cloud_asset_resources_search_all" "folders" {
   asset_types = [
     "cloudresourcemanager.googleapis.com/Folder"
   ]
-  query = "state:ACTIVE"
+  query      = "state:ACTIVE"
+  depends_on = [module.folders]
 }
 
 data "google_cloud_asset_resources_search_all" "projects" {
@@ -19,7 +20,8 @@ data "google_cloud_asset_resources_search_all" "projects" {
   asset_types = [
     "cloudresourcemanager.googleapis.com/Project"
   ]
-  query = "state:ACTIVE"
+  query      = "state:ACTIVE"
+  depends_on = [module.projects]
 }
 
 locals {
