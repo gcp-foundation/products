@@ -7,6 +7,7 @@ locals {
 
   environment = merge({
     domain                   = var.domain
+    organization_id          = local.organization_id
     folder_devops            = "devops"
     folder_management        = "management"
     project_control          = "control"
