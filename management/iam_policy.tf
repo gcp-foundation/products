@@ -50,7 +50,7 @@ resource "google_organization_iam_member" "organization" {
 resource "google_folder_iam_member" "folder" {
   for_each = { for binding in local.folder_bindings : "${binding.folder_id}/${binding.role}/${binding.member}" => binding }
 
-  folder = module.folders[each.value.folder_id].id
+  folder = flatten([for folder in module.folders.folder_id : values(folder) if contains(keys(folder), each.value.folder_id)]).0
   role   = each.value.role
   member = each.value.member
 }
