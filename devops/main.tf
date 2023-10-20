@@ -46,8 +46,3 @@ module "projects" {
   billing_account = try(each.value.project.billingAccount, local.environment.billingAccount)
   labels          = var.labels
 }
-
-# moved {
-#   from     = module.projects[each.key]
-#   to       = module.projects[entry.project.displayName]
-# }

@@ -1,5 +1,6 @@
 organizations:
-- name: organizations/${organization_id}
+- displayName: ${domain}
+  name: organizations/${organization_id} # Change to just organization_id and do lookup in code
   iamPolicy:
     bindings:
     - role: roles/resourcemanager.organizationAdmin
@@ -37,7 +38,7 @@ organizations:
       - ${management_sa}
 folders: []
 projects: 
-- name: ${projects.guardrails.project_id}
+- name: ${projects.guardrails.project_id} # Change to just guardrails and do lookup in code
   iamPolicy: 
     bindings:
     - role: roles/iam.serviceAccountAdmin
