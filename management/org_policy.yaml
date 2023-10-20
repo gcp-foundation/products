@@ -1,14 +1,25 @@
+# This file defines all the organization policies that can be set on organizations, folders and projects and gives an
+# opinionated view on the right settings in a secure environment. Some settings are implementation specific and so 
+# have not been set yet and some are parameterised so the inputs can be easily changed without having to manage this
+# file. 
+
+# All of the policises are defined below at the organization level but they can be moved or altered at the folder 
+# or project level if required. However, recommended advice is to define as many policies globally as possible 
+
+# Note: resourcemanager.accessBoundaries can only be set at the organization level
+#       iam.disableCrossProjectServiceAccountUsage can only be set at the project level
+
 
 displayName: ${domain}
 orgPolicy:
-# This list constraint defines the modes of access allowed to Vertex AI Workbench notebooks and instances where enforced. 
+# This list constraint defines the modes of access allowed to Vertex AI Workbench notebooks and instances. 
 # Default allowAll: true
-- name: ainotebooks.accessMode
-  spec:
-    rules:
-    - allowAll: true
+# - name: ainotebooks.accessMode
+#   spec:
+#     rules:
+#     - allowAll: true
 
-# This boolean constraint, when enforced, prevents the creation of Vertex AI Workbench instances with the file download option enabled
+# This boolean constraint prevents the creation of Vertex AI Workbench instances with the file download option enabled
 # Default enforce: false
 - name: ainotebooks.disableFileDownloads
   spec:
@@ -32,10 +43,10 @@ orgPolicy:
 # This list constraint defines the VM and container image options a user can select when creating new Vertex AI Workbench notebooks and instances 
 # Recommend setting this to a set of defined images
 # Default allowAll: true
-- name: ainotebooks.environmentOptions
-  spec:
-    rules:
-    - allowAll: true
+# - name: ainotebooks.environmentOptions
+#   spec:
+#     rules:
+#     - allowAll: true
     
 # This boolean constraint, when enforced, requires that newly created Vertex AI Workbench user-managed notebooks and instances have an automatic upgrade schedule set.
 # Default enforce: false
@@ -57,7 +68,7 @@ orgPolicy:
 - name: ainotebooks.restrictVpcNetworks
   spec:
     rules:
-    - allowAll: true
+    - denyAll: true
     
 # Disables code downloads of source code previously uploaded to App Engine.    
 # Default enforce: false
@@ -69,10 +80,10 @@ orgPolicy:
 # This list constraint defines the set of App Engine Standard legacy runtimes (Python 2.7, PHP 5.5 and Java 8) allowed for deployments past End of Support.
 # Recommend denying all
 # Default denyAll: true
-- name: appengine.runtimeDeploymentExemption
-  spec:
-    rules:
-    - denyAll: true
+# - name: appengine.runtimeDeploymentExemption
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This boolean constraint, when set to True, will disable users from using BigQuery Omni to process data on Amazon Web Services where this constraint is enforced.
 # Default enforce: false
@@ -99,19 +110,17 @@ orgPolicy:
 # This list constraint defines the set of allowed Cloud Build Worker Pools for performing Builds using Cloud Build. 
 # Recommendation is to set this to the required worker pools either globally or at a folder or project level
 # Default allowAll: true
-- name: cloudbuild.allowedWorkerPools
-  spec:
-    rules:
-    - allowAll: true
-    # - values:
-    #     allowedValues: ${org_allowed_worker_pools}
+# - name: cloudbuild.allowedWorkerPools
+#   spec:
+#     rules:
+#     - allowAll: true
 
 # This boolean constraint, when enforced, prevents Cloud Deploy from adding Cloud Deploy identifier labels to deployed objects.
 # Default enforce: false
-- name: clouddeploy.disableServiceLabelGeneration
-  spec:
-    rules:
-    - enforce: true
+# - name: clouddeploy.disableServiceLabelGeneration
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This list constraint defines the allowed ingress settings for deployment of a Cloud Function.
 # Recommended to restrict all ingress to internal vpc only 
@@ -167,14 +176,15 @@ orgPolicy:
 
 # PREVIEW: This list constraint defines the minimum destroy scheduled duration in days that the user can specify when creating a new key. 
 # Default allowAll: true
-- name: cloudkms.minimumDestroyScheduledDuration
-  spec:
-    rules:
-    - values:
-        allowedValues: 
-        - in:90d
+# - name: cloudkms.minimumDestroyScheduledDuration
+#   spec:
+#     rules:
+#     - values:
+#         allowedValues: 
+#         - in:90d
 
 # This list constraint defines the list of target types, such as App Engine HTTP, HTTP, or Pubsub, allowed for Cloud Scheduler jobs
+# Recommendation is to use PUBSUB tergets for scheduler unless good reasons not to
 # Default allowAll: true
 - name: cloudscheduler.allowedTargetTypes
   spec:
@@ -185,20 +195,21 @@ orgPolicy:
 
 # This boolean constraint, when enforced, disables public marketplace for all users under the org
 # Default enforce: false
-- name: commerceorggovernance.disablePublicMarketplace
-  spec:
-    rules:
-    - enforce: true
+# - name: commerceorggovernance.disablePublicMarketplace
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This list constraint defines the set of services allowed for marketplace organizations, 
 # and can only include values from the list below: [PRIVATE_MARKETPLACE, IAAS_PROCUREMENT].
 # Default allowAll: true
-- name: commerceorggovernance.marketplaceServices
-  spec:
-    rules:
-    - allowAll: true
+# - name: commerceorggovernance.marketplaceServices
+#   spec:
+#     rules:
+#     - allowAll: true
 
 # This list constraint defines the allowed encryption settings for new VLAN Attachments
+# Recommendation is to use IPSEC encryption on interconnects
 # Default allowAll: true
 - name: compute.allowedVlanAttachmentEncryption
   spec:
@@ -216,17 +227,17 @@ orgPolicy:
 
 # This boolean constraint, when enforced, disables creating Cloud Armor security policies.
 # Default enforce: false
-- name: compute.disableGlobalCloudArmorPolicy  
-  spec:
-    rules:
-    - enforce: true
+# - name: compute.disableGlobalCloudArmorPolicy  
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This boolean constraint disables creation of global load balancing product
 # Default enforce: false
-- name: compute.disableGlobalLoadBalancing  
-  spec:
-    rules:
-    - enforce: true
+# - name: compute.disableGlobalLoadBalancing  
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This boolean constraint disables global serial port access to Compute Engine VMs 
 # Default enforce: false
@@ -258,10 +269,10 @@ orgPolicy:
 
 # Do not configure or modify this policy. This constraint is automatically configured during Assured Workloads onboarding and is only intended for advanced regulatory control for Assured Workloads. 
 # Default enforce: false
-- name: compute.disableInstanceDataAccessApis 
-  spec:
-    rules:
-    - enforce: true
+# - name: compute.disableInstanceDataAccessApis 
+#   spec:
+#     rules:
+#     - enforce: false
 
 # This boolean constraint restricts whether a user can create Internet Network Endpoint Groups (NEG) with a type of INTERNET_FQDN_PORT and INTERNET_IP_PORT
 # Default enforce: false
@@ -277,7 +288,7 @@ orgPolicy:
     rules:
     - enforce: true
 
-# This boolean constraint when enforced, disables creation of VM instance types that do not comply with FIPS requirements.
+# This boolean constraint disables creation of VM instance types that do not comply with FIPS requirements.
 # Default enforce: false
 - name: compute.disableNonFIPSMachineTypes
   spec:
@@ -286,10 +297,10 @@ orgPolicy:
 
 # This list constraint defines the set of Private Service Connect endpoint types for which users cannot create forwarding rules.
 # Default allowAll: true
-- name: compute.disablePrivateServiceConnectCreationForConsumers
-  spec:
-    rules:
-    - allowAll: true
+# - name: compute.disablePrivateServiceConnectCreationForConsumers
+#   spec:
+#     rules:
+#     - allowAll: true
 
 # This boolean constraint disables serial port access to Compute Engine VMs
 # Default enforce: false
@@ -328,10 +339,10 @@ orgPolicy:
 
 # Do not configure or modify this policy. This constraint is automatically configured during Assured Workloads onboarding and is only intended for advanced regulatory control for Assured Workloads.
 # Default enforce: false
-- name: compute.enableComplianceMemoryProtection
-  spec:
-    rules:
-    - enforce: true
+# - name: compute.enableComplianceMemoryProtection
+#   spec:
+#     rules:
+#     - enforce: false
 
 # This boolean constraint, when set to true, enables OS Login on all newly created Projects.                                  -            -
 # Default enforce: false
@@ -348,12 +359,13 @@ orgPolicy:
     - enforce: true
 
 # This list constraint defines the set of predefined policies that can be enforced for VPC Flow logs.
+# Recommendation is to enforce comprehensive vpc flow logs 
 # Default allowAll: true
-- name: compute.requireVpcFlowLogs
-  spec:
-    rules:
-    - values:
-        allowedValues: ["COMPREHENSIVE"]
+# - name: compute.requireVpcFlowLogs
+#   spec:
+#     rules:
+#     - values:
+#         allowedValues: ["COMPREHENSIVE"]
 
 # This list constraint defines the set of subnetworks that are allowed to use Cloud NAT.
 # Recommend only allowing cloud NAT where required and blocking by default
@@ -382,10 +394,10 @@ orgPolicy:
 # The deny list of this list constraint defines the set of services that require all new resources to be created with Confidential Computing enabled. 
 # If confidential computing is required then set to deny all
 # Default allowAll: true
-- name: compute.restrictNonConfidentialComputing
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.restrictNonConfidentialComputing
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the set of Compute Engine networks that are allowed to use Partner Interconnect. 
 # Deny by default and only enable when setting up partner interconnects
@@ -397,47 +409,48 @@ orgPolicy:
 
 # This list constraint defines the organizations, folders, and projects that can connect to service attachments within a producer's organization or project. 
 # Default allowAll: true
-- name: compute.restrictPrivateServiceConnectConsumer
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.restrictPrivateServiceConnectConsumer
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines which service attachments Private Service Connect consumers can connect to. 
 # Default allowAll: true
-- name: compute.restrictPrivateServiceConnectProducer
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.restrictPrivateServiceConnectProducer
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the type of protocol forwarding rule objects with target instance that a user can create.
 # Default allowAll: true
-- name: compute.restrictProtocolForwardingCreationForTypes
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.restrictProtocolForwardingCreationForTypes
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the set of shared VPC Backend Services that eligible resources can use. 
 # Default allowAll: true
-- name: compute.restrictSharedVpcBackendServices
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.restrictSharedVpcBackendServices
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the set of Shared VPC host projects that projects at or below this resource can attach to.
 # Default allowAll: true
-- name: compute.restrictSharedVpcHostProjects
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.restrictSharedVpcHostProjects
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the set of shared VPC subnetworks that eligible resources can use. 
 # Default allowAll: true
-- name: compute.restrictSharedVpcSubnetworks
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.restrictSharedVpcSubnetworks
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the set of VPC networks that are allowed to be peered with the VPC networks
+# Recommendation is to define these when setting up VPN Peering
 # Default allowAll: true
 - name: compute.restrictVpcPeering
   spec:
@@ -445,6 +458,7 @@ orgPolicy:
     - denyAll: true
 
 # This list constraint defines the set of valid IP addresses that can be configured as VPN peer IPs.
+# Recommendation is to define these when setting up VPN Peering
 # Default allowAll: true
 - name: compute.restrictVpnPeerIPs
   spec:
@@ -453,10 +467,10 @@ orgPolicy:
 
 # This boolean constraint restricts the set of users that can remove a Shared VPC host project lien without organization-level permission where this constraint is set to True. 
 # Default enforce: false
-- name: compute.restrictXpnProjectLienRemoval
-  spec:
-    rules:
-    - enforce: true
+# - name: compute.restrictXpnProjectLienRemoval
+#   spec:
+#     rules:
+#     - enforce: true
 
 # When set to `True`, newly created projects will use Zonal DNS as default
 # Default enforce: false
@@ -467,12 +481,13 @@ orgPolicy:
 
 # This list constraint defines the set of projects that are allowed to create and own shared reservations in the org. 
 # Default denyAll: true
-- name: compute.sharedReservationsOwnerProjects
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.sharedReservationsOwnerProjects
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This boolean constraint skips the creation of the default network
+# Always set this to true or every project will get a network if you don't explicitly skip it
 # Default enforce: false
 - name: compute.skipDefaultNetworkCreation
   spec:
@@ -481,12 +496,13 @@ orgPolicy:
 
 # This list constraint defines a set of projects that are allowed to use Compute Engine's storage resources.
 # Default allowAll: true
-- name: compute.storageResourceUseRestrictions
-  spec:
-    rules:
-    - denyAll: true
+# - name: compute.storageResourceUseRestrictions
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the set of projects that can be used for image storage and disk instantiation for Compute Engine.
+# Recommendation is to set up specific projects for storing images and define them here
 # Default allowAll: true
 - name: compute.trustedImageProjects
   spec:
@@ -510,17 +526,17 @@ orgPolicy:
 # This constraint restricts all access paths for diagnostics for assurd workloads
 # Do Not Configure this policy
 # Default enforce: false
-- name: container.restrictNoncompliantDiagnosticDataAccess
-  spec:
-    rules:
-    - enforce: true
+# - name: container.restrictNoncompliantDiagnosticDataAccess
+#   spec:
+#     rules:
+#     - enforce: false
 
 # This constraint restricts the git remotes that repositories in a dataform project can use
 # Default allowAll: true
-- name: dataform.restrictGitRemotes
-  spec:
-    rules:
-    - allowAll: true
+# - name: dataform.restrictGitRemotes
+#   spec:
+#     rules:
+#     - allowAll: true
 
 # This constraint blocks public access to datastreams and enforces private connection methods
 # Default enforce: false
@@ -539,12 +555,11 @@ orgPolicy:
         allowedValues: ${allowed_contact_domains}
 
 # This constraint ensures that firestore uses the firestore service agent for import/export
-# Recommend enforcing this if using firestore as this is going to be mandatory in future
 # Default enforce: false
-- name: essentialcontacts.disableProjectSecurityContacts
-  spec:
-    rules:
-    - enforce: true
+# - name: essentialcontacts.disableProjectSecurityContacts
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint ensures that firestore uses the firestore service agent for import/export
 # Recommend enforcing this if using firestore as this is going to be mandatory in future
@@ -563,17 +578,17 @@ orgPolicy:
 
 # This constraint disables cloud logging for the Cloud Healthcare API
 # Default enforce: false
-- name: gcp.disableCloudLogging
-  spec:
-    rules:
-    - enforce: true
+# - name: gcp.disableCloudLogging
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint defines the locations that resources can be created
 # Default allowAll: true
-- name: gcp.resourceLocations
-  spec:
-    rules:
-    - allowAll: true
+# - name: gcp.resourceLocations
+#   spec:
+#     rules:
+#     - allowAll: true
 
 # This constraint defines the projects that can contain CMEK keys. 
 # Recommend limiting to projects within the organization at least
@@ -600,7 +615,7 @@ orgPolicy:
         - bigtable.googleapis.com
         - cloudfunctions.googleapis.com
         - composer.googleapis.com
-        - compute.googleapis.com
+        # - compute.googleapis.com
         - container.googleapis.com
         - dataflow.googleapis.com
         - dataproc.googleapis.com
@@ -654,10 +669,10 @@ orgPolicy:
 # This constraint defines the service accounts that can be granted OAuth 2.0 tokens with a lifetime of up to 12 hours
 # This is generally a bad idea and shouldn't be allowed. Default is to deny all
 # Default denyAll: true
-- name: iam.allowServiceAccountCredentialLifetimeExtension
-  spec:
-    rules:
-    - denyAll: true
+# - name: iam.allowServiceAccountCredentialLifetimeExtension
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This constraint prevents the default app engine and compute engine service accounts being automatically granted IAM roles
 # This stops projects getting created with service accounts that have the editor role (against google policy!)
@@ -678,13 +693,13 @@ orgPolicy:
 # This constraint prevents the creation of service accounts
 # Only enable this constraint where you want to prevent the creation of service accounts
 # Default enforce : false
-- name: iam.disableServiceAccountCreation
-  spec:
-    rules:
-    - enforce: true
+# - name: iam.disableServiceAccountCreation
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint prevents the creation of service account keys
-# Service account keys should not be used unless absolutely necessary (they include a private key in the json file)
+# Service account keys should not be used unless absolutely necessary 
 # Default enforce : false
 - name: iam.disableServiceAccountKeyCreation
   spec:
@@ -700,147 +715,145 @@ orgPolicy:
     - enforce: true
 
 # This constraint prevents GKE clusters being created with workload identity. 
-# Should probably be enabled but not using GKE at the moment
 # Default enforce : false
-- name: iam.disableWorkloadIdentityClusterCreation
-  spec:
-    rules:
-    - enforce: true
+# - name: iam.disableWorkloadIdentityClusterCreation
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint prevents the removal of a cross project service account lien without organization level access
 # Recommend using this to restrict who can remove liens
 # Default enforce : false
-- name: iam.restrictCrossProjectServiceAccountLienRemoval
-  spec:
-    rules:
-    - enforce: true
+# - name: iam.restrictCrossProjectServiceAccountLienRemoval
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint defines the time that a service account key expires in. Only one value can be set. 
 # Recommend using this to ensure that service account keys expire. It needs to replace the parent and cannot merge with parent
 # Default allowAll : true
-- name: iam.serviceAccountKeyExpiryHours 
-  spec:
-    inheritFromParent: false
-    rules:
-    - allowAll: true
+# - name: iam.serviceAccountKeyExpiryHours 
+#   spec:
+#     inheritFromParent: false
+#     rules:
+#     - allowAll: true
 
 # This constraint restricts the list of AWS account ID that can be configured for workload identity federation in CLOUD IAM
 # Recommend using this if workload identity federation is being used between AWS and this organization
 # Default allowAll : true
-- name: iam.workloadIdentityPoolAwsAccounts
-  spec:
-    rules:
-    - allowAll : true
+# - name: iam.workloadIdentityPoolAwsAccounts
+#   spec:
+#     rules:
+#     - allowAll : true
 
 # This constraint restricts the identity providers that can be used to configure workload identify federation within CLOUD IAM
 # Recommend using this if workload identity federation is being used to restrict the identity providers
 # Default allowAll : true
-- name: iam.workloadIdentityPoolProviders
-  spec:
-    rules:
-    - allowAll : true
-
+# - name: iam.workloadIdentityPoolProviders
+#   spec:
+#     rules:
+#     - allowAll : true
 
 # This constraint disables the use of IAP on global resources
 # Default enforce : false
-- name: iap.requireGlobalIapWebDisabled
-  spec:
-    rules:
-    - enforce: true
+# - name: iap.requireGlobalIapWebDisabled
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint disables the use of IAP on regional resources
 # Default enforce : false
-- name: iap.requireRegionalIapWebDisabled 
-  spec:
-    rules:
-    - enforce: true
+# - name: iap.requireRegionalIapWebDisabled 
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint determines what VPC Service Controls modes can be set when provisioning a new Anthos Service Mesh Managed Control Plane. 
 # Valid values are "NONE" and "COMPATIBLE". Only needed once anthos is being deployed
 # Default allowAll : true
-- name: meshconfig.allowedVpcscModes 
-  spec:
-    rules:
-    - allowAll : true
+# - name: meshconfig.allowedVpcscModes 
+#   spec:
+#     rules:
+#     - allowAll : true
 
 # This constraint can restrict the list of cloud resources that are returned
-# This is not available at project level
+# This is only available at the organization level
 # Default allowAll : true
-- name: resourcemanager.accessBoundaries
-  spec:
-    rules:
-    - values:
-        allowedValues: 
-        - under:organizations/${organization_id}
+# - name: resourcemanager.accessBoundaries
+#   spec:
+#     rules:
+#     - values:
+#         allowedValues: 
+#         - under:organizations/${organization_id}
 
 # This constraint defines the external organizations which resources can be moved to
 # Recommend not enabling this constraint and using the default deny all
 # Default denyAll : true
-- name: resourcemanager.allowedExportDestinations 
-  spec:
-    rules:
-    - denyAll : true
+# - name: resourcemanager.allowedExportDestinations 
+#   spec:
+#     rules:
+#     - denyAll : true
 
 # This constraint defines the external organizations which resources can be moved from
 # Recommend not enabling this constraint and using the default deny all
 # Default denyAll : true
-- name: resourcemanager.allowedImportSources 
-  spec:
-    rules:
-    - denyAll : true
+# - name: resourcemanager.allowedImportSources 
+#   spec:
+#     rules:
+#     - denyAll : true
 
 # This constraint defines the services that are enabled for export
 # Recommend not enabling this constraint and using the default deny all
 # Default denyAll : true
-- name: resourcemanager.allowEnabledServicesForExport 
-  spec:
-    rules:
-    - denyAll : true
+# - name: resourcemanager.allowEnabledServicesForExport 
+#   spec:
+#     rules:
+#     - denyAll : true
 
 # This constraint restricts the types of ingress allowed for cloud run
 # Default allowAll : true
-- name: run.allowedIngress 
-  spec:
-    rules:
-    - allowAll : true
+# - name: run.allowedIngress 
+#   spec:
+#     rules:
+#     - allowAll : true
 
 # This constraint restricts the types of egress allowed for cloud run
 # Default allowAll : true
-- name: run.allowedVPCEgress
-  spec:
-    rules:
-    - allowAll : true
+# - name: run.allowedVPCEgress
+#   spec:
+#     rules:
+#     - allowAll : true
 
 # This constraint allows the binary authorization policies to be restricted for cloud run
 # Default allowAll : true
-- name: run.allowedBinaryAuthorizationPolicies
-  spec:
-    rules:
-    - allowAll : true
+# - name: run.allowedBinaryAuthorizationPolicies
+#   spec:
+#     rules:
+#     - allowAll : true
 
 # This constraint prevents a set of services from being enabled it only supports three services
 # compute, deploymentmanager and dns. restrictServiceUsage is much more usable, don't bother with this one
 # Default allowAll : true
-- name: serviceuser.services
-  spec:
-    rules:
-    - allowAll : true
+# - name: serviceuser.services
+#   spec:
+#     rules:
+#     - allowAll : true
 
 # This constraint is only intended for advanced regulatory control for assured workloads
 # It is not recommended to use this control and is automatically configured during Assured Workloads onboarding
 # Default enforce : false
-- name: spanner.assuredWorkloadsAdvancedServiceControls
-  spec:
-    rules:
-    - enforce: true
+# - name: spanner.assuredWorkloadsAdvancedServiceControls
+#   spec:
+#     rules:
+#     - enforce: false
 
 # This constraint is only intended for advanced regulatory control for assured workloads
 # It is not recommended to use this control and is automatically configured during Assured Workloads onboarding
 # Default enforce : false
-- name: spanner.disableMultiRegionInstanceIfNoLocationSelected
-  spec:
-    rules:
-    - enforce: true
+# - name: spanner.disableMultiRegionInstanceIfNoLocationSelected
+#   spec:
+#     rules:
+#     - enforce: false
 
 # Has this constrain been removed?
 # Default enforce : false
@@ -851,26 +864,26 @@ orgPolicy:
 
 # This constraint restricts adding authorized networks for unproxied database access to cloud sql instances
 # Default enforce : false
-- name: sql.restrictAuthorizedNetworks
-  spec:
-    rules:
-    - enforce: true
+# - name: sql.restrictAuthorizedNetworks
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This constraint is only intended for advanced regulatory control for assured workloads
 # It is not recommended to use this control and is automatically configured during Assured Workloads onboarding
 # Default enforce : false
-- name: sql.restrictNoncompliantDiagnosticDataAccess
-  spec:
-    rules:
-    - enforce: true
+# - name: sql.restrictNoncompliantDiagnosticDataAccess
+#   spec:
+#     rules:
+#     - enforce: false
 
 # This constraint is only intended for advanced regulatory control for assured workloads
 # It is not recommended to use this control and is automatically configured during Assured Workloads onboarding
 # Default enforce : false
-- name: sql.restrictNoncompliantResourceCreation
-  spec:
-    rules:
-    - enforce: true
+# - name: sql.restrictNoncompliantResourceCreation
+#   spec:
+#     rules:
+#     - enforce: false
 
 # This constraint restricts public access to sql instances
 # It is recommended to not allow public access to sql instances
@@ -901,10 +914,10 @@ orgPolicy:
 # This constraint allows the retention policy on a storage bucket to be restricted to a defined set of periods
 # It is recommended to define a set of retention policies to standardise storage bucket retention 
 # Default allowAll : true
-- name: storage.retentionPolicySeconds
-  spec:                                     
-    rules:
-    - allowAll : true
+# - name: storage.retentionPolicySeconds
+#   spec:                                     
+#     rules:
+#     - allowAll : true
 
 # This constraint ensures that storage buckets do not use access control lists for objects 
 # and everyone has the same level of access to a storage bucket. This is the recommended setting
