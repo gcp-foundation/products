@@ -18,9 +18,12 @@ locals {
   #   folder_org_policies = flatten([])
 }
 
-module "organization_policy" {
-  source   = "github.com/gcp-foundation/modules//iam/org_policy?ref=0.0.1"
-  parent   = "organizations/${local.organization_id}"
-  policies = local.organization_policies
-}
+# module "organization_policy" {
+#   source   = "github.com/gcp-foundation/modules//iam/org_policy?ref=0.0.1"
+#   parent   = "organizations/${local.organization_id}"
+#   policies = local.organization_policies
+# }
 
+output "local.organization_policies" {
+  value = local.organization_policies
+}
