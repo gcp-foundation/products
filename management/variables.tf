@@ -34,24 +34,30 @@ variable "iam_policy" {
   type = object({
     organizations = list(object({
       name = string
-      iamPolicy = list(object({
-        role    = string
-        members = list(string)
-      }))
+      iamPolicy = object({
+        bindings = list(object({
+          role    = string
+          members = list(string)
+        }))
+      })
     }))
     folders = list(object({
       name = string
-      iamPolicy = list(object({
-        role    = string
-        members = list(string)
-      }))
+      iamPolicy = object({
+        bindings = list(object({
+          role    = string
+          members = list(string)
+        }))
+      })
     }))
     projects = list(object({
       name = string
-      iamPolicy = list(object({
-        role    = string
-        members = list(string)
-      }))
+      iamPolicy = object({
+        bindings = list(object({
+          role    = string
+          members = list(string)
+        }))
+      })
     }))
   })
 
