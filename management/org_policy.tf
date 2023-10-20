@@ -18,7 +18,7 @@ locals {
 
 module "organization_policy" {
   source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/org_policy?ref=v0.0.1"
-  parent   = "organizations/${module.organization.name}"
+  parent   = "organizations/${local.organization_id}"
   policies = local.organization_policies
 }
 
