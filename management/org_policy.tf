@@ -1,6 +1,6 @@
 locals {
 
-  organization = yamldecode(templatefile("${path.module}/org_policy.yaml", jsonencode(local.environment)))
+  organization = yamldecode(templatefile("${path.module}/org_policy.yaml", local.environment))
 
   organization_policies = flatten([
     for policy in local.organization.orgPolicy :

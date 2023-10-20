@@ -14,9 +14,9 @@ locals {
     project_logging          = "logging"
     project_billing          = "billing"
     project_guardrails       = "guardrails"
-    org_allowed_worker_pools = []
-    allowed_contact_domains  = ["@${var.domain}"]
-    customer_directory_ids   = ["C0427ier2", "C00nahm7y"] # lastest.gcp-foundation.com, publicisgroupe.net
+    org_allowed_worker_pools = jsonencode([])
+    allowed_contact_domains  = jsonencode(["@${var.domain}"])
+    customer_directory_ids   = jsonencode(["C0427ier2", "C00nahm7y"]) # lastest.gcp-foundation.com, publicisgroupe.net
   }, var.environment)
 
   organization_id = module.assets.organization_id
