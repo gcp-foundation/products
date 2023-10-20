@@ -2,6 +2,7 @@
 locals {
   devops_env = {
     organization_id = module.organization.org_id
+    domain          = local.organization.displayName
     devops_sa       = "serviceAccount:${module.service_account["devops"].email}"
     management_sa   = "serviceAccount:${module.service_account["management"].email}"
 

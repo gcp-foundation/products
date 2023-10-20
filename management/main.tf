@@ -1,5 +1,5 @@
 module "assets" {
-  source = "github.com/gcp-foundation/modules//assets?ref=0.0.1"
+  source = "github.com/gcp-foundation/modules//assets?ref=0.0.2"
   domain = var.domain
 }
 
