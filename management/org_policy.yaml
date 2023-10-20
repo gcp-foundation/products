@@ -545,7 +545,7 @@ orgPolicy:
 - name: essentialcontacts.allowedContactDomains
   spec:
     rules:
-    - values
+    - values:
         allowedValues: ${allowed_contact_domains}
 
 # This constraint ensures that firestore uses the firestore service agent for import/export
