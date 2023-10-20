@@ -6,14 +6,17 @@ module "assets" {
 locals {
 
   environment = merge({
-    domain             = var.domain
-    folder_devops      = "devops"
-    folder_management  = "management"
-    project_control    = "control"
-    project_pipelines  = "pipelines"
-    project_logging    = "logging"
-    project_billing    = "billing"
-    project_guardrails = "guardrails"
+    domain                   = var.domain
+    folder_devops            = "devops"
+    folder_management        = "management"
+    project_control          = "control"
+    project_pipelines        = "pipelines"
+    project_logging          = "logging"
+    project_billing          = "billing"
+    project_guardrails       = "guardrails"
+    org_allowed_worker_pools = []
+    allowed_contact_domains  = ["@${var.domain}"]
+    customer_directory_ids   = ["C0427ier2", "C00nahm7y"] # lastest.gcp-foundation.com, publicisgroupe.net
   }, var.environment)
 
   organization_id = module.assets.organization_id

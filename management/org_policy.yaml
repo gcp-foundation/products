@@ -932,14 +932,14 @@ orgPolicy:
     - enforce: true
 
 folders: []
-projects: 
-- displayName: ${pipelines}
-  orgPolicy:
-  # This constraint prevents the use of service accounts across projects. It is a project level constraint 
-  # This needs enabling if service accounts need to be used across projects (like in the pipelines)
-  # Default enforce : false
-  - name: iam.disableCrossProjectServiceAccountUsage
-    spec:
-      rules:
-      - enforce: true
+projects: []
+# - displayName: ${project_pipelines}
+#   orgPolicy:
+#   # This constraint prevents the use of service accounts across projects. It is a project level constraint 
+#   # This needs enabling if service accounts need to be used across projects (like in the pipelines)
+#   # Default enforce : false
+#   - name: iam.disableCrossProjectServiceAccountUsage
+#     spec:
+#       rules:
+#       - enforce: true
 
