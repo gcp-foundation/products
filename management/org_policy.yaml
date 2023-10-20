@@ -211,8 +211,6 @@ orgPolicy:
     rules:
     - enforce: true
 
-    This boolean constraint, when enforced, disables creating Cloud Armor security policies
-
 # This boolean constraint, when enforced, disables creating Cloud Armor security policies.
 # Default enforce: false
 # - name: compute.disableGlobalCloudArmorPolicy  
