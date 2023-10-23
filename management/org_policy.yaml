@@ -125,37 +125,39 @@ orgPolicy:
 # This list constraint defines the allowed ingress settings for deployment of a Cloud Function.
 # Recommended to restrict all ingress to internal vpc only 
 # Default allowAll: true
-- name: cloudfunctions.allowedIngressSettings
-  spec:
-    rules:
-    - values:
-        allowedValues: 
-        - ALLOW_INTERNAL_ONLY
+# - name: cloudfunctions.allowedIngressSettings
+#   spec:
+#     rules:
+#     - values:
+#         allowedValues: 
+#         - ALLOW_INTERNAL_ONLY
 
 # This list constraint defines the allowed VPC Connector egress settings for deployment of a Cloud Function.
 # Recommendation is to route all traffic through a vpc access connector
 # Default allowAll: true
-- name: cloudfunctions.allowedVpcConnectorEgressSettings
-  spec:
-    rules:
-    - values:
-        allowedValues: 
-        - ALL_TRAFFIC
+# - name: cloudfunctions.allowedVpcConnectorEgressSettings
+#   spec:
+#     rules:
+#     - values:
+#         allowedValues: 
+#         - ALL_TRAFFIC
 
 # This boolean constraint enforces setting a VPC Connector when deploying a Cloud Function
 # Recommendation is to route all traffic through a VPC Connector
 # Default enforce: false
-- name: cloudfunctions.requireVPCConnector
-  spec:
-    rules:
-    - enforce: true
+# - name: cloudfunctions.requireVPCConnector
+#   spec:
+#     rules:
+#     - enforce: true
 
 # This list constraint defines the set of allowed Cloud Function Generations that can be used to create new Function resources.
 # Default allowAll: true
 - name: cloudfunctions.restrictAllowedGenerations
   spec:
     rules:
-    - allowAll: true
+    - values: 
+        allowedValue:
+        - 1stGen
 
 # This list constraint defines the Cloud KMS key types which may be created under a given hierarchy node. When this constraint is enforced, only KMS key types specified within this org policy may be created within the associated hierarchy node.
 # Restrict KMS protection levels to HSM only
@@ -545,7 +547,7 @@ orgPolicy:
     rules:
     - enforce: true
 
-# This constraint ensures that firestore uses the firestore service agent for import/export
+# This list constraint defines the set of domains that email addresses added to Essential Contacts can have
 # Recommend limiting it to the organization email domain @xyz.com
 # Default enforce: false
 - name: essentialcontacts.allowedContactDomains
@@ -554,12 +556,13 @@ orgPolicy:
     - values:
         allowedValues: ${allowed_contact_domains}
 
-# This constraint ensures that firestore uses the firestore service agent for import/export
+# This boolean constraint, when enforced, allows organization policy administrators to ensure that only contacts 
+# assigned at the organization or folder level can receive security notifications.
 # Default enforce: false
-# - name: essentialcontacts.disableProjectSecurityContacts
-#   spec:
-#     rules:
-#     - enforce: true
+- name: essentialcontacts.disableProjectSecurityContacts
+  spec:
+    rules:
+    - enforce: true
 
 # This constraint ensures that firestore uses the firestore service agent for import/export
 # Recommend enforcing this if using firestore as this is going to be mandatory in future
@@ -741,18 +744,18 @@ orgPolicy:
 # This constraint restricts the list of AWS account ID that can be configured for workload identity federation in CLOUD IAM
 # Recommend using this if workload identity federation is being used between AWS and this organization
 # Default allowAll : true
-# - name: iam.workloadIdentityPoolAwsAccounts
-#   spec:
-#     rules:
-#     - allowAll : true
+- name: iam.workloadIdentityPoolAwsAccounts
+  spec:
+    rules:
+    - denyAll : true
 
 # This constraint restricts the identity providers that can be used to configure workload identify federation within CLOUD IAM
 # Recommend using this if workload identity federation is being used to restrict the identity providers
 # Default allowAll : true
-# - name: iam.workloadIdentityPoolProviders
-#   spec:
-#     rules:
-#     - allowAll : true
+- name: iam.workloadIdentityPoolProviders
+  spec:
+    rules:
+    - allowAll : true
 
 # This constraint disables the use of IAP on global resources
 # Default enforce : false
