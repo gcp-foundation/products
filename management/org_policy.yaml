@@ -102,10 +102,10 @@ orgPolicy:
 # This list constraint defines the allowed Cloud Build integrations for performing Builds through receiving webhooks from services outside Google Cloud.
 # Recommendation is to deny all unless using this feature
 # Default allowAll: true
-- name: cloudbuild.allowedIntegrations
-  spec:
-    rules:
-    - denyAll: true
+# - name: cloudbuild.allowedIntegrations
+#   spec:
+#     rules:
+#     - denyAll: true
 
 # This list constraint defines the set of allowed Cloud Build Worker Pools for performing Builds using Cloud Build. 
 # Recommendation is to set this to the required worker pools either globally or at a folder or project level
