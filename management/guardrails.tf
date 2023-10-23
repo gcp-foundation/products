@@ -132,6 +132,13 @@ module "service_account" {
   project      = local.projects[local.environment.project_guardrails].project_id
 }
 
+# resource "google_service_account_iam_member" "guardrails_service_account_member" {
+#   for_each = local.guardrails
+#   service_account_id  = module.service_acount[each.key].name
+#   role     = "iam.serviceaccounts.actAs"
+#   member   = module.guardrails_log_sink[each.key].writer_identity
+# }
+
 module "guardrails_cloudfunction" {
   source   = "github.com/gcp-foundation/modules//compute/cloudfunction?ref=0.0.1"
   for_each = local.guardrails

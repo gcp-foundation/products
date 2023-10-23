@@ -43,4 +43,7 @@ projects:
     bindings:
     - role: roles/iam.serviceAccountAdmin
       members:
+      - ${management_sa}    
+    - role: roles/iam.serviceAccountUser
+      members:
       - ${management_sa}
