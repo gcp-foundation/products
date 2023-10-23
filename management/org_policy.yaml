@@ -156,7 +156,7 @@ orgPolicy:
   spec:
     rules:
     - values: 
-        allowedValue:
+        allowedValues:
         - 1stGen
 
 # This list constraint defines the Cloud KMS key types which may be created under a given hierarchy node. When this constraint is enforced, only KMS key types specified within this org policy may be created within the associated hierarchy node.
@@ -755,7 +755,7 @@ orgPolicy:
 - name: iam.workloadIdentityPoolProviders
   spec:
     rules:
-    - allowAll : true
+    - denyAll : true
 
 # This constraint disables the use of IAP on global resources
 # Default enforce : false
