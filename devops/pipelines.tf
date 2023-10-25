@@ -163,9 +163,9 @@ resource "google_service_account_iam_member" "sa_cloudbuild_token_creator" {
   member             = "serviceAccount:service-${module.projects[local.environment.project_pipelines].number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"
 }
 
-resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_admin" {
+resource "google_storage_bucket_iam_member" "sa_service_account_output_storage_admin" {
   for_each = local.pipeline_service_accounts
-  bucket   = module.state_files.name
+  bucket   = module.build_output.name
   role     = "roles/storage.objectAdmin"
   member   = "serviceAccount:${module.service_accounts[each.key].email}"
 }

@@ -38,6 +38,18 @@ organizations:
       - ${sa_management}
 
 projects: 
+- displayName: ${project_pipelines}
+  iamPolicy:
+    bindings:
+    - role: roles/logging.logWriter
+      members: 
+      - ${sa_management}
+    - role: roles/source.reader
+      members: 
+      - ${sa_management}
+    - role: roles/cloudbuild.builds.builder
+      members: 
+      - ${sa_management}
 - displayName: ${project_guardrails} 
   iamPolicy: 
     bindings:

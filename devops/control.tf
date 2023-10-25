@@ -46,9 +46,9 @@ module "state_files" {
   depends_on = [module.control_kms_key.encrypters, module.control_kms_key.decrypters]
 }
 
-resource "google_storage_bucket_iam_member" "sa_service_account_output_storage_admin" {
+resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_admin" {
   for_each = local.pipeline_service_accounts
-  bucket   = module.build_output.name
+  bucket   = module.state_files.name
   role     = "roles/storage.objectAdmin"
   member   = "serviceAccount:${module.service_accounts[each.key].email}"
 }

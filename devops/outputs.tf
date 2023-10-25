@@ -15,7 +15,7 @@ output "projects" {
 }
 
 output "service_accounts" {
-  value = local.service_accounts
+  value = local.pipeline_service_accounts
 }
 
 output "devops_policy" {
