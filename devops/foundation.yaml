@@ -1,8 +1,10 @@
 organizations:
 - displayName: ${domain}
   name: organizations/${organization_id}
+
   folders:
   - displayName : ${folder_devops}
+
     projects:
     - displayName: ${project_control}
       services: 
@@ -27,6 +29,9 @@ organizations:
       - name: ${sa_management}
         displayName: Pipeline ${folder_management}
         description: Cloudbuild Service Account for ${folder_management} folder  
+      storage:
+      - name: ${bucket_tfstate}
+
     - displayName: ${project_pipelines}
       services:       
       - compute.googleapis.com              # - Enabled by google by default
@@ -45,7 +50,9 @@ organizations:
       - name: ${sa_guardrail_orgpolicy}
         displayName: Guardrail Organization Policy
         description: Cloudfunction Service Account for Organization Policy Guardrail
+
   - displayName: ${folder_management}
+  
     projects:
     - displayName: ${project_logging}
       services: 

@@ -20,23 +20,12 @@ locals {
     }
   }
 
-  # service_accounts = {
-  #   devops : {
-  #     name : "devops"
-  #     display_name : "Devops Pipeline Service Account"
-  #     description : "Service Account for the devops pipeline"
-  #   },
-  #   management : {
-  #     name : "management"
-  #     display_name : "Management Pipeline Service Account"
-  #     description : "Service Account for the management pipeline"
-  #   }
-  # }
+  terraform_version_sha256sum = "c0ed7bc32ee52ae255af9982c8c88a7a4c610485cf1d55feeb037eab75fa082c"
+  terraform_version           = "1.5.7"
+  gcloud_version              = "388.0.0-slim"
 }
 
-output "pipeline_encrypters" {
-  value = local.pipeline_encrypters
-}
+
 
 module "pipeline_service_identity" {
   source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
@@ -78,12 +67,6 @@ module "artifact_registry" {
   depends_on = [module.projects, module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters]
 }
 
-locals {
-  terraform_version_sha256sum = "c0ed7bc32ee52ae255af9982c8c88a7a4c610485cf1d55feeb037eab75fa082c"
-  terraform_version           = "1.5.7"
-  gcloud_version              = "388.0.0-slim"
-}
-
 resource "null_resource" "cloudbuild_terraform_builder" {
   triggers = {
     project_id                  = module.projects[local.environment.project_pipelines].project_id
@@ -113,6 +96,15 @@ module "build_output" {
   depends_on = [module.projects, module.pipeline_kms_key.encrypters, module.pipeline_kms_key.decrypters]
 }
 
+# Uses organization policy V1 to avoid needing to set quota project during bootstrap
+resource "google_project_organization_policy" "iam_disableCrossProjectServiceAccountUsage" {
+  project    = module.projects[local.environment.project_control].project_id
+  constraint = "iam.disableCrossProjectServiceAccountUsage"
+  boolean_policy {
+    enforced = false
+  }
+}
+
 module "repository" {
   source   = "github.com/gcp-foundation/modules//devops/repository?ref=0.0.1"
   for_each = toset(local.repositories)
@@ -121,15 +113,6 @@ module "repository" {
   project = module.projects[local.environment.project_pipelines].project_id
 
   depends_on = [module.projects]
-}
-
-# Uses organization policy V1 to avoid needing to set quota project during bootstrap
-resource "google_project_organization_policy" "iam_disableCrossProjectServiceAccountUsage" {
-  project    = module.projects[local.environment.project_control].project_id
-  constraint = "iam.disableCrossProjectServiceAccountUsage"
-  boolean_policy {
-    enforced = false
-  }
 }
 
 // Permisions to pipeline service accounts for cloudbuild pipelines
@@ -231,7 +214,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
   project     = module.projects[local.environment.project_pipelines].project_id
   location    = var.location
   name        = "${each.key}-terraform-apply"
-  description = "Terraform plan for ${each.key}"
+  description = "Terraform apply for ${each.key}"
 
   trigger_template {
     branch_name = "main"

@@ -53,7 +53,7 @@ resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_ad
   member   = "serviceAccount:${module.service_accounts[each.key].email}"
 }
 
-/* Will this work?
+/* Need to determine best approach for billing
 resource "google_storage_bucket_iam_member" "sa_service_account_billing_user" {
   for_each           = local.service_accounts
   billing_account_id = var.billing_account_id

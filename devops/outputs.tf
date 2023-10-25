@@ -1,21 +1,25 @@
-output "resources" {
-  value = local.resources
-}
+# output "config" {
+#   value = local.config_V2
+# }
 
 output "organizations" {
   value = local.organizations
 }
 
 output "folders" {
-  value = module.folders
+  value = local.folders
 }
 
 output "projects" {
-  value = module.projects
+  value = local.projects
 }
 
 output "service_accounts" {
-  value = local.pipeline_service_accounts
+  value = local.service_accounts
+}
+
+output "resources" {
+  value = local.resources
 }
 
 output "devops_policy" {

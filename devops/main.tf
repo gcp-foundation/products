@@ -14,6 +14,7 @@ locals {
     sa_devops              = "sa-devops"
     sa_management          = "sa-management"
     sa_guardrail_orgpolicy = "sa-guardrail-orgpolicy"
+    bucket_tfstate         = "tfstate"
   }, var.environment)
 
   organizations = yamldecode(templatefile("${path.module}/foundation.yaml", local.environment)).organizations
