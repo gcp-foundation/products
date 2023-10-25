@@ -1,5 +1,9 @@
-output "organization_id" {
-  value = module.organization
+output "resources" {
+  value = local.resources
+}
+
+output "organizations" {
+  value = local.organizations
 }
 
 output "folders" {
@@ -8,4 +12,16 @@ output "folders" {
 
 output "projects" {
   value = module.projects
+}
+
+output "service_accounts" {
+  value = local.service_accounts
+}
+
+output "devops_policy" {
+  value = local.devops_policy
+}
+
+output "management_policy" {
+  value = local.management_policy
 }

@@ -650,7 +650,6 @@ orgPolicy:
 
 # This constraint restricts the TLS versions that can be used (deny only)
 # Recommended denying the use of TLS_VERSION_1 and TLS_VERSION_1_1
-# Note: Beware that there are certain services used by google that are not specifically enabled on project that must be in this list if used
 # Default allowAll: true
 - name: gcp.restrictTLSVersion 
   spec:

@@ -4,32 +4,34 @@ locals {
   pipeline_encrypters       = concat([for identity in module.pipeline_service_identity : "serviceAccount:${identity.email}"], local.other_pipeline_encrypters)
 
   gar_name         = "cloudbuild"
-  cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects["devops/${local.environment.project_pipelines}"].project_id}/${local.gar_name}/terraform@sha256"
+  cloudbuild_image = "${var.location}-docker.pkg.dev/${module.projects[local.environment.project_pipelines].project_id}/${local.gar_name}/terraform@sha256"
 
   repositories = ["devops", "management"]
   pipelines = {
     devops = {
       repo            = "devops"
-      service_account = "devops"
+      service_account = "sa-devops"
+      storage_bucket  = "tfstate"
     }
     management = {
       repo            = "management"
-      service_account = "management"
+      service_account = "sa-management"
+      storage_bucket  = "tfstate"
     }
   }
 
-  service_accounts = {
-    devops : {
-      name : "devops"
-      display_name : "Devops Pipeline Service Account"
-      description : "Service Account for the devops pipeline"
-    },
-    management : {
-      name : "management"
-      display_name : "Management Pipeline Service Account"
-      description : "Service Account for the management pipeline"
-    }
-  }
+  # service_accounts = {
+  #   devops : {
+  #     name : "devops"
+  #     display_name : "Devops Pipeline Service Account"
+  #     description : "Service Account for the devops pipeline"
+  #   },
+  #   management : {
+  #     name : "management"
+  #     display_name : "Management Pipeline Service Account"
+  #     description : "Service Account for the management pipeline"
+  #   }
+  # }
 }
 
 output "pipeline_encrypters" {
@@ -39,23 +41,23 @@ output "pipeline_encrypters" {
 module "pipeline_service_identity" {
   source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
   for_each = toset(local.pipeline_services)
-  project  = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project  = module.projects[local.environment.project_pipelines].project_id
   service  = each.value
 
   depends_on = [module.projects]
 }
 
 data "google_storage_project_service_account" "pipeline_gcs_account" {
-  project = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project = module.projects[local.environment.project_pipelines].project_id
 
   depends_on = [module.projects]
 }
 
 module "pipeline_kms_key" {
   source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
-  name          = module.projects["devops/${local.environment.project_pipelines}"].project_id
-  key_ring_name = module.projects["devops/${local.environment.project_pipelines}"].project_id
-  project       = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  name          = module.projects[local.environment.project_pipelines].project_id
+  key_ring_name = module.projects[local.environment.project_pipelines].project_id
+  project       = module.projects[local.environment.project_pipelines].project_id
   location      = var.location
   encrypters    = local.pipeline_encrypters
   decrypters    = local.pipeline_encrypters
@@ -68,7 +70,7 @@ module "artifact_registry" {
 
   name        = local.gar_name
   description = "Docker containers for cloudbuild"
-  project     = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project     = module.projects[local.environment.project_pipelines].project_id
   location    = var.location
 
   kms_key_id = module.pipeline_kms_key.key_id
@@ -84,7 +86,7 @@ locals {
 
 resource "null_resource" "cloudbuild_terraform_builder" {
   triggers = {
-    project_id                  = module.projects["devops/${local.environment.project_pipelines}"].project_id
+    project_id                  = module.projects[local.environment.project_pipelines].project_id
     terraform_version_sha256sum = local.terraform_version_sha256sum
     terraform_version           = local.terraform_version
     gar_name                    = local.gar_name
@@ -93,7 +95,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
 
   provisioner "local-exec" {
     command = <<EOT
-    gcloud builds submit ${path.module}/cloudbuild_builder/ --project ${module.projects["devops/${local.environment.project_pipelines}"].project_id} --config=${path.module}/cloudbuild_builder/cloudbuild.yaml --substitutions=_GCLOUD_VERSION=${local.gcloud_version},_TERRAFORM_VERSION=${local.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${local.terraform_version_sha256sum},_REGION=${module.artifact_registry.location},_REPOSITORY=${local.gar_name}
+    gcloud builds submit ${path.module}/cloudbuild_builder/ --project ${module.projects[local.environment.project_pipelines].project_id} --config=${path.module}/cloudbuild_builder/cloudbuild.yaml --substitutions=_GCLOUD_VERSION=${local.gcloud_version},_TERRAFORM_VERSION=${local.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${local.terraform_version_sha256sum},_REGION=${module.artifact_registry.location},_REPOSITORY=${local.gar_name}
   EOT
   }
 
@@ -103,7 +105,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
 module "build_output" {
   source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
   name                = "build-outputs"
-  project             = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project             = module.projects[local.environment.project_pipelines].project_id
   location            = var.location
   data_classification = "internal"
   kms_key_id          = module.pipeline_kms_key.key_id
@@ -116,9 +118,56 @@ module "repository" {
   for_each = toset(local.repositories)
 
   name    = each.value
-  project = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project = module.projects[local.environment.project_pipelines].project_id
 
   depends_on = [module.projects]
+}
+
+# Uses organization policy V1 to avoid needing to set quota project during bootstrap
+resource "google_project_organization_policy" "iam_disableCrossProjectServiceAccountUsage" {
+  project    = module.projects[local.environment.project_control].project_id
+  constraint = "iam.disableCrossProjectServiceAccountUsage"
+  boolean_policy {
+    enforced = false
+  }
+}
+
+// Permisions to pipeline service accounts for cloudbuild pipelines
+resource "google_artifact_registry_repository_iam_member" "sa-project-artifact-reader" {
+  for_each   = local.pipeline_service_accounts
+  project    = module.artifact_registry.project
+  location   = module.artifact_registry.location
+  repository = module.artifact_registry.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${module.service_accounts[each.key].email}"
+}
+
+resource "google_service_account_iam_member" "sa_service_account_user" {
+  for_each           = local.pipeline_service_accounts
+  service_account_id = module.service_accounts[each.key].name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${module.service_accounts[each.key].email}"
+}
+
+resource "google_service_account_iam_member" "sa_service_account_token_creator" {
+  for_each           = local.pipeline_service_accounts
+  service_account_id = module.service_accounts[each.key].name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${module.service_accounts[each.key].email}"
+}
+
+resource "google_service_account_iam_member" "sa_cloudbuild_token_creator" {
+  for_each           = local.pipeline_service_accounts
+  service_account_id = module.service_accounts[each.key].name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:service-${module.projects[local.environment.project_pipelines].number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"
+}
+
+resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_admin" {
+  for_each = local.pipeline_service_accounts
+  bucket   = module.state_files.name
+  role     = "roles/storage.objectAdmin"
+  member   = "serviceAccount:${module.service_accounts[each.key].email}"
 }
 
 resource "google_cloudbuild_trigger" "plan-trigger" {
@@ -126,7 +175,7 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
   #   source   = "github.com/gcp-foundation/modules//devops/cloudbuild?ref=0.0.1"
   for_each = local.pipelines
 
-  project     = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project     = module.projects[local.environment.project_pipelines].project_id
   location    = var.location
   name        = "${each.key}-terraform-plan"
   description = "Terraform plan for ${each.key}"
@@ -137,7 +186,7 @@ resource "google_cloudbuild_trigger" "plan-trigger" {
     invert_regex = true
   }
 
-  service_account = module.service_account[each.value.service_account].id
+  service_account = module.service_accounts[each.value.service_account].id
 
   substitutions = {
     _DEFAULT_REGION       = var.location
@@ -179,7 +228,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
   #   source   = "github.com/gcp-foundation/modules//devops/cloudbuild?ref=0.0.1"
   for_each = local.pipelines
 
-  project     = module.projects["devops/${local.environment.project_pipelines}"].project_id
+  project     = module.projects[local.environment.project_pipelines].project_id
   location    = var.location
   name        = "${each.key}-terraform-apply"
   description = "Terraform plan for ${each.key}"
@@ -214,7 +263,7 @@ resource "google_cloudbuild_trigger" "apply-trigger" {
   #   }
   # }
 
-  service_account = module.service_account[each.value.service_account].id
+  service_account = module.service_accounts[each.value.service_account].id
 
   substitutions = {
     _DEFAULT_REGION       = var.location

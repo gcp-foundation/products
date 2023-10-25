@@ -5,45 +5,50 @@ organizations:
     bindings:
     - role: roles/resourcemanager.organizationAdmin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/orgpolicy.policyAdmin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/cloudkms.admin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/cloudasset.viewer
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/logging.admin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/storage.admin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/pubsub.admin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/bigquery.admin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/artifactregistry.admin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/cloudfunctions.admin
       members:
-      - ${management_sa}
+      - ${sa_management}
     - role: roles/iam.serviceAccountAdmin
       members:
-      - ${management_sa}
-folders: []
+      - ${sa_management}
+
 projects: 
-- name: ${projects.guardrails.project_id} # Change to just guardrails and do lookup in code
+- displayName: ${project_guardrails} 
   iamPolicy: 
     bindings:
     - role: roles/iam.serviceAccountAdmin
       members:
-      - ${management_sa}    
+      - ${sa_management}
+
+service_accounts:
+- displayName : ${sa_guardrail_orgpolicy}
+  iamPolicy: 
+    bindings:
     - role: roles/iam.serviceAccountUser
       members:
-      - ${management_sa}
+      - ${sa_management}

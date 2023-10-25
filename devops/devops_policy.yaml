@@ -5,27 +5,39 @@ organizations:
     bindings:
     - role: roles/resourcemanager.organizationAdmin
       members:
-      - ${devops_sa}
+      - ${sa_devops}
     - role: roles/orgpolicy.policyAdmin
       members:
-      - ${devops_sa}
+      - ${sa_devops}
     - role: roles/serviceusage.serviceUsageAdmin
       members:
-      - ${devops_sa}
+      - ${sa_devops}
     - role: roles/iam.serviceAccountAdmin
       members:
-      - ${devops_sa}
+      - ${sa_devops}
     - role: roles/cloudkms.admin
       members:
-      - ${devops_sa}
+      - ${sa_devops}
     - role: roles/artifactregistry.admin
       members:
-      - ${devops_sa}
+      - ${sa_devops}
     - role: roles/storage.admin
       members:
-      - ${devops_sa}
+      - ${sa_devops}
     - role: roles/iam.workloadIdentityPoolAdmin
       members:
-      - ${devops_sa}
-folders: []
-projects: []
+      - ${sa_devops}
+
+projects: 
+- displayName: ${project_pipelines}
+  iamPolicy:
+    bindings:
+    - role: roles/logging.logWriter
+      members: 
+      - ${sa_devops}
+    - role: roles/source.reader
+      members: 
+      - ${sa_devops}
+    - role: roles/cloudbuild.builds.builder
+      members: 
+      - ${sa_devops}
