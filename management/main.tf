@@ -1,3 +1,11 @@
+data "google_organization" "organization" {
+  domain = var.domain
+}
+
+locals {
+  organization_id = data.google_organization.organization.org_id
+}
+
 module "organization" {
   source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/organization?ref=v0.0.1"
   domain = var.domain

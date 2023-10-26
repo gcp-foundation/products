@@ -58,7 +58,7 @@ resource "google_folder_iam_member" "folder" {
 resource "google_project_iam_member" "project" {
   for_each = { for binding in local.project_bindings : "${binding.project_id}/${binding.role}/${binding.member}" => binding }
 
-  project = module.projects[each.value.project_id].project
+  project = module.projects[each.value.project_id].project_id
   role    = each.value.role
   member  = each.value.member
 }
