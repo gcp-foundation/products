@@ -17,10 +17,10 @@ locals {
     for folder in var.iam_policy.folders : [
       for binding in folder.iamPolicy.bindings : [
         for member in binding.members : {
-          folder_id = folder.name
+          folder_id   = folder.name
           iac_created = folder.iac_created
-          role      = binding.role
-          member    = member
+          role        = binding.role
+          member      = member
         }
       ]
     ]
@@ -31,10 +31,10 @@ locals {
     for project in var.iam_policy.projects : [
       for binding in project.iamPolicy.bindings : [
         for member in binding.members : {
-          project_id = project.name
+          project_id  = project.name
           iac_created = project.iac_created
-          role       = binding.role
-          member     = member
+          role        = binding.role
+          member      = member
         }
       ]
     ]
