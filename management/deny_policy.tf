@@ -1,13 +1,7 @@
-locals {
-  filenames = fileset("${path.module}/policies", "**")
-
-  policies = flatten([for filename in local.filenames : yamldecode(templatefile("${path.module}/policies/${filename}", local.environment))])
-}
-
 resource "google_iam_deny_policy" "deny_policy" {
   provider = google-beta
 
-  for_each = { for policy in local.policies : split("/", policy.name)[3] => policy }
+  for_each = { for policy in var.deny_policies : split("/", policy.name)[3] => policy }
 
   parent       = split("/", each.value.name)[1]
   name         = each.key
