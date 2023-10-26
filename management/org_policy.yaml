@@ -932,7 +932,7 @@ orgPolicy:
 folders:
 - displayName: ${folder_management}
   orgPolicy: 
-  - name: storage.uniformBucketLevelAcess
+  - name: storage.uniformBucketLevelAccess
     spec:
       inheritFromParent: false
       rules:
