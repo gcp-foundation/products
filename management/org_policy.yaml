@@ -929,7 +929,14 @@ orgPolicy:
     rules:
     - enforce: true
 
-folders: []
+folders:
+- displayName: ${folder_management}
+  orgPolicy: 
+  - name: storage.uniformBucketLevelAcess
+    spec:
+     inheritFromParent: false
+      rules:
+      - enforce: true
 
 projects: 
 - displayName: ${project_control}
