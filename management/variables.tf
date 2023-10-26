@@ -42,8 +42,7 @@ variable "iam_policy" {
       })
     }))
     folders = list(object({
-      name        = string
-      iac_created = bool
+      name = string
       iamPolicy = object({
         bindings = list(object({
           role    = string
@@ -52,8 +51,7 @@ variable "iam_policy" {
       })
     }))
     projects = list(object({
-      name        = string
-      iac_created = bool
+      name = string
       iamPolicy = object({
         bindings = list(object({
           role    = string
