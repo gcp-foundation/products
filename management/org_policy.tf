@@ -8,7 +8,7 @@ locals {
   ])
 
   folder_policies = {
-    for folder in local.organization.folders : "organizations/${local.organization_id}/${folder.displayName}" => [
+    for folder in local.organization.folders : "${folder.parent}/${folder.displayName}" => [
       for policy in folder.orgPolicy :
       { policy = policy } if try(policy.exists, false) != true
     ]
