@@ -934,7 +934,7 @@ folders:
   orgPolicy: 
   - name: storage.uniformBucketLevelAcess
     spec:
-     inheritFromParent: false
+      inheritFromParent: false
       rules:
       - enforce: true
 
