@@ -27,6 +27,11 @@ variable "foundation_hierarchy" {
       labels      = map(string)
     }))
   })
+
+  validation {
+    condition     = length(var.foundation_hierarchy.folders.*.displayName) == length(distinct(var.foundation_hierarchy.folders.*.displayName)) && length(var.foundation_hierarchy.projects.*.displayName) == length(distinct(var.foundation_hierarchy.projects.*.displayName))
+    error_message = "Folder or Project name already exists/duplicated."
+  }
 }
 
 variable "iam_policy" {
