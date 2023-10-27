@@ -1,7 +1,3 @@
-output "config" {
-  value = local.config
-}
-
 output "resources" {
   value = local.resources
 }
