@@ -30,7 +30,7 @@ module "control_kms_key" {
 ###############################################################################
 
 module "state_files" {
-  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.2"
   name                = "tfstate"
   project             = module.resources.projects[local.environment.project_control].project_id
   location            = var.location

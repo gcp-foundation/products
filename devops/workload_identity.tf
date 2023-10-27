@@ -1,19 +1,3 @@
-locals {
-  github_pipelines = {
-    devops = {
-      repo            = "gcp-foundations/bootstrap"
-      service_account = "sa-devops"
-      storage_bucket  = "tfstate"
-    }
-    management = {
-      repo            = "gcp-foundation/foundations"
-      service_account = "sa-management"
-      storage_bucket  = "tfstate"
-    }
-  }
-
-}
-
 resource "google_iam_workload_identity_pool" "github" {
   provider                  = google-beta
   project                   = module.resources.projects[local.environment.project_control].project_id
@@ -41,8 +25,8 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 
 # Loop around pipeline definitions and create workload user for each pipeline
 resource "google_service_account_iam_member" "workload_user" {
-  for_each           = local.pipeline_service_accounts
-  service_account_id = module.resources.service_accounts[each.key].name
+  for_each           = local.pipelines
+  service_account_id = module.resources.service_accounts[each.value.service_account].name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${module.resources.projects[local.environment.project_control].number}/locations/global/workloadIdentityPools/github/attribute.repository/gcp-foundation/bootstrap"
+  member             = "principalSet://iam.googleapis.com/projects/${module.resources.projects[local.environment.project_control].number}/locations/global/workloadIdentityPools/github/attribute.repository/gcp-foundation/${each.value.repo}"
 }

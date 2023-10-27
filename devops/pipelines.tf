@@ -9,15 +9,15 @@ locals {
   terraform_version           = "1.5.7"
   gcloud_version              = "388.0.0-slim"
 
-  repositories = ["devops", "management"]
+  repositories = ["bootstrap", "foundations"]
   pipelines = {
     devops = {
-      repo            = "devops"
+      repo            = "bootstrap"
       service_account = "sa-devops"
       storage_bucket  = "tfstate"
     }
     management = {
-      repo            = "management"
+      repo            = "foundations"
       service_account = "sa-management"
       storage_bucket  = "tfstate"
     }
@@ -44,7 +44,7 @@ module "pipeline_kms_key" {
 ###############################################################################
 
 module "artifact_registry" {
-  source = "github.com/gcp-foundation/modules//devops/artifact_registry?ref=0.0.1"
+  source = "github.com/gcp-foundation/modules//devops/artifact_registry?ref=0.0.2"
 
   name        = local.gar_name
   description = "Docker containers for cloudbuild"
@@ -83,7 +83,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
 ###############################################################################
 
 module "build_output" {
-  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.2"
   name                = "build-outputs"
   project             = module.resources.projects[local.environment.project_pipelines].project_id
   location            = var.location
@@ -110,7 +110,7 @@ resource "google_project_organization_policy" "iam_disableCrossProjectServiceAcc
 ###############################################################################
 
 module "repository" {
-  source   = "github.com/gcp-foundation/modules//devops/repository?ref=0.0.1"
+  source   = "github.com/gcp-foundation/modules//devops/repository?ref=0.0.2"
   for_each = toset(local.repositories)
 
   name    = each.value
