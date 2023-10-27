@@ -754,9 +754,10 @@ orgPolicy:
 - name: iam.workloadIdentityPoolProviders
   spec:
     rules:
-    - values:
-        allowedValues:
-        - github
+    - allowAll : true
+    # - values:
+    #     allowedValues:
+    #     - https://token.actions.githubusercontent.com
 
 # This constraint disables the use of IAP on global resources
 # Default enforce : false
