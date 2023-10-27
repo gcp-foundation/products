@@ -1,8 +1,3 @@
-module "assets" {
-  source = "github.com/gcp-foundation/modules//assets?ref=0.0.2"
-  domain = var.domain
-}
-
 locals {
 
   environment = merge({
@@ -20,7 +15,15 @@ locals {
     customer_directory_ids   = jsonencode(["C0427ier2", "C00nahm7y"]) # lastest.gcp-foundation.com, publicisgroupe.net
   }, var.environment)
 
-  organization_id = module.assets.organization_id
-  folders         = module.assets.folders
-  projects        = module.assets.projects
+  resources        = module.resources
+  organization_id  = module.resources.organization_id
+  folders          = module.resources.folders
+  projects         = module.resources.projects
+  service_accounts = module.resources.service_accounts
 }
+
+module "resources" {
+  source = "github.com/gcp-foundation/modules//assets?ref=0.0.2"
+  domain = var.domain
+}
+

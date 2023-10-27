@@ -1,23 +1,23 @@
 organizations:
 
-  organization:
+  ${domain}:
     displayName: ${domain}
 
 folders:
 
-  folder_devops:
+  ${folder_devops}:
     displayName : ${folder_devops}
-    parent: organizations/organization
+    parent: organizations/${domain}
 
-  folder_management:
+  ${folder_management}:
     displayName: ${folder_management}
-    parent: organizations/organization
+    parent: organizations/${domain}
 
 projects:
 
-  project_control:
+  ${project_control}:
     displayName: ${project_control}
-    parent: folders/folder_devops
+    parent: folders/${folder_devops}
     services: 
     - compute.googleapis.com              # - Enabled by google by default
     - oslogin.googleapis.com              # - Enabled by google by default

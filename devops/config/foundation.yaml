@@ -1,12 +1,14 @@
 organizations:
 - displayName: ${domain}
-  name: organizations/${organization_id}
 
   folders:
+
   - displayName : ${folder_devops}
 
     projects:
+
     - displayName: ${project_control}
+      labels: ${project_labels}
       services: 
       - compute.googleapis.com              # - Enabled by google by default
       - oslogin.googleapis.com              # - Enabled by google by default
@@ -28,11 +30,24 @@ organizations:
         description: Cloudbuild Service Account for ${folder_devops} folder
       - name: ${sa_management}
         displayName: Pipeline ${folder_management}
-        description: Cloudbuild Service Account for ${folder_management} folder  
+        description: Cloudbuild Service Account for ${folder_management} folder
+      # Implemented as terraform at the momemnt
+      keyRings:
+      - name: ${project_control}
+        location: europe-west2
+        cryptoKeys:
+        - name: ${project_control}
+          primary:
+            protectionLevel: HSM
+            algorithm: GOOGLE_SYMMETRIC_ENCRYPTION
+          purpose: ENCRYPT_DECRYPT
+          destroyScheduledDuration: 86400s
+      # Implemented as terraform at the momemnt
       storage:
       - name: ${bucket_tfstate}
 
     - displayName: ${project_pipelines}
+      labels: ${project_labels}
       services:       
       - compute.googleapis.com              # - Enabled by google by default
       - oslogin.googleapis.com              # - Enabled by google by default
@@ -50,11 +65,24 @@ organizations:
       - name: ${sa_guardrail_orgpolicy}
         displayName: Guardrail Organization Policy
         description: Cloudfunction Service Account for Organization Policy Guardrail
+      # Implemented as terraform at the momemnt
+      keyRings:
+      - name: ${project_pipelines}
+        location: europe-west2
+        cryptoKeys:
+        - name: ${project_pipelines}
+          primary:
+            protectionLevel: HSM
+            algorithm: GOOGLE_SYMMETRIC_ENCRYPTION
+          purpose: ENCRYPT_DECRYPT
+          destroyScheduledDuration: 86400s
 
   - displayName: ${folder_management}
   
     projects:
+
     - displayName: ${project_logging}
+      labels: ${project_labels}
       services: 
       - compute.googleapis.com              # - Enabled by google by default
       - oslogin.googleapis.com              # - Enabled by google by default
@@ -62,12 +90,27 @@ organizations:
       - bigquery.googleapis.com             # - For logging to bigquery
       - bigquerymigration.googleapis.com    # - Enabled by google as dependency
       - bigquerystorage.googleapis.com      # - Enabled by google as dependency
+      # Implemented as terraform at the momemnt
+      keyRings:
+      - name: ${project_logging}
+        location: europe-west2
+        cryptoKeys:
+        - name: ${project_logging}
+          primary:
+            protectionLevel: HSM
+            algorithm: GOOGLE_SYMMETRIC_ENCRYPTION
+          purpose: ENCRYPT_DECRYPT
+          destroyScheduledDuration: 86400s
+
     - displayName: ${project_billing}
+      labels: ${project_labels}
       services: 
       - compute.googleapis.com              # - Enabled by google by default
       - oslogin.googleapis.com              # - Enabled by google by default
       - bigquery.googleapis.com             # - For billing to bigquery
+
     - displayName: ${project_guardrails}
+      labels: ${project_labels}
       services: 
       - compute.googleapis.com              # - Enabled by google by default
       - oslogin.googleapis.com              # - Enabled by google by default
@@ -77,3 +120,14 @@ organizations:
       - pubsub.googleapis.com               # - For cloud functions
       - cloudbuild.googleapis.com           # - For cloud functions
       - cloudfunctions.googleapis.com       # - For guardrails
+      # Implemented as terraform at the momemnt
+      keyRings:
+      - name: guardrails
+        location: europe-west2
+        cryptoKeys:
+        - name: guardrails
+          primary:
+            protectionLevel: HSM
+            algorithm: GOOGLE_SYMMETRIC_ENCRYPTION
+          purpose: ENCRYPT_DECRYPT
+          destroyScheduledDuration: 86400s

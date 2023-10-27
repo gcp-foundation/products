@@ -1,6 +1,5 @@
 organizations:
 - displayName: ${domain}
-  name: organizations/${organization_id} # Change to just organization_id and do lookup in code
   iamPolicy:
     bindings:
     - role: roles/resourcemanager.organizationAdmin

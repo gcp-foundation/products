@@ -1,6 +1,5 @@
 organizations:
 - displayName: ${domain}
-  name: organizations/${organization_id}
   iamPolicy:
     bindings:
     - role: roles/resourcemanager.organizationAdmin
