@@ -754,7 +754,9 @@ orgPolicy:
 - name: iam.workloadIdentityPoolProviders
   spec:
     rules:
-    - denyAll : true
+    - values:
+        allowedValues:
+        - github
 
 # This constraint disables the use of IAP on global resources
 # Default enforce : false
