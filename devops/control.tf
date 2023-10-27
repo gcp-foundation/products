@@ -55,12 +55,12 @@ resource "google_storage_bucket_iam_member" "sa_service_account_state_storage_ad
 # Need to consider how to do billing
 ###############################################################################
 
-resource "google_billing_account_iam_member" "sa_service_account_billing_user" {
-  for_each           = local.pipeline_service_accounts
-  billing_account_id = var.billing_account
-  role               = "roles/billing.user"
-  member             = "serviceAccount:${module.resources.service_accounts[each.key].email}"
-}
+# resource "google_billing_account_iam_member" "sa_service_account_billing_user" {
+#   for_each           = local.pipeline_service_accounts
+#   billing_account_id = var.billing_account
+#   role               = "roles/billing.user"
+#   member             = "serviceAccount:${module.resources.service_accounts[each.key].email}"
+# }
 
 # resource "google_billing_account_iam_member" "sa_service_account_billing_admin" {
 #   for_each           = local.service_accounts
