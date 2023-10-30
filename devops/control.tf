@@ -6,8 +6,8 @@ locals {
   regex_sa = "projects\\/(?P<project>.*)\\/serviceAccounts/(?P<name>.*)@(?P<domain>.*)\\.iam\\.gserviceaccount\\.com"
 
   pipeline_service_accounts = merge(
-    { for pipeline in try(var.cloudbuild_pipelines, {}) : pipeline.service_account => local.resources.service_accounts[pipeline.service_account] },
-    { for pipeline in try(var.github_pipelines, {}) : pipeline.service_account => local.resources.service_accounts[pipeline.service_account] }
+    { for pipeline in try(var.cloudbuild_pipelines.pipelines, {}) : pipeline.service_account => local.resources.service_accounts[pipeline.service_account] },
+    { for pipeline in try(var.github_pipelines.pipelines, {}) : pipeline.service_account => local.resources.service_accounts[pipeline.service_account] }
   )
 }
 
