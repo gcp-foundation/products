@@ -153,7 +153,7 @@ resource "google_storage_bucket_iam_member" "sa_service_account_output_storage_a
 ###############################################################################
 
 module "cloudbuild_repo" {
-  source = "github.com/gcp-foundation/modules//devops/repository?ref=0.0.1"
+  source = "github.com/gcp-foundation/modules//devops/repository?ref=0.0.2"
 
   name    = "cloudbuild"
   project = var.project_pipelines.project_id
@@ -234,7 +234,7 @@ resource "google_cloudbuild_trigger" "build_image" {
 
 resource "google_cloudbuild_trigger" "plan-trigger" {
   # module "plan_trigger" {
-  #   source   = "github.com/gcp-foundation/modules//devops/cloudbuild?ref=0.0.1"
+  #   source   = "github.com/gcp-foundation/modules//devops/cloudbuild?ref=0.0.2"
   for_each = var.pipelines
 
   project     = var.project_pipelines.project_id
