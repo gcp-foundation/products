@@ -43,3 +43,13 @@ variable "github_organization" {
   description = "The github organization where the github repositories are storage"
   default     = null
 }
+
+variable "devops_policy" {
+  description = "The iam policy to apply to the devops service account"
+  default     = null
+}
+
+variable "management_policy" {
+  description = "The iam policy to apply to the management service account"
+  default     = null
+}
