@@ -1,0 +1,29 @@
+build:
+  steps:
+  - name: gcr.io/cloud-builders/docker
+    args: [
+      build,
+      --tag=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform,
+      --build-arg=GCLOUD_VERSION=${_GCLOUD_VERSION},
+      --build-arg=TERRAFORM_VERSION=${_TERRAFORM_VERSION},
+      --build-arg=TERRAFORM_VERSION_SHA256SUM=${_TERRAFORM_VERSION_SHA256SUM},
+      .
+      ]
+  - name: '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform'
+    args: ['version']
+  timeout: 600s
+  logsBucket: gs://pipelines-ndjb-build-outputs/terraform/cloudbuild/plan/$BUILD_ID
+images: ['${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform']
+description: Docker build for terraform cloudbuild image
+name: terraform-docker
+serviceAccount: ${sa-cloudbuild}
+substitutions:
+  _TERRAFORM_VERSION: '1.5.7' 
+  _TERRAFORM_VERSION_SHA256SUM: 'c0ed7bc32ee52ae255af9982c8c88a7a4c610485cf1d55feeb037eab75fa082c'
+triggerTemplate:
+  branchName: main
+  project: ${project_pipelines}
+  repoName: cloudbuild
+
+
+

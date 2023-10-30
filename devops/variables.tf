@@ -29,3 +29,17 @@ variable "environment" {
   default     = {}
 }
 
+variable "cloudbuild_pipelines" {
+  description = "The configuration for the cloudbuild pipelines"
+  default     = null
+}
+
+variable "github_pipelines" {
+  description = "The configuration for the github pipelines"
+  default     = null
+}
+
+variable "github_organization" {
+  description = "The github organization where the github repositories are storage"
+  default     = null
+}

@@ -1,0 +1,29 @@
+locals {
+
+  environment = merge({
+    domain                   = var.domain
+    organization_id          = local.organization_id
+    folder_devops            = "devops"
+    folder_management        = "management"
+    project_control          = "control"
+    project_pipelines        = "pipelines"
+    project_logging          = "logging"
+    project_billing          = "billing"
+    project_guardrails       = "guardrails"
+    org_allowed_worker_pools = jsonencode([])
+    allowed_contact_domains  = jsonencode(["@${var.domain}"])
+    customer_directory_ids   = jsonencode(["C0427ier2", "C00nahm7y"]) # lastest.gcp-foundation.com, publicisgroupe.net
+  }, var.environment)
+
+  resources        = module.resources
+  organization_id  = module.resources.organization_id
+  folders          = module.resources.folders
+  projects         = module.resources.projects
+  service_accounts = module.resources.service_accounts
+}
+
+module "resources" {
+  source = "github.com/gcp-foundation/modules//assets?ref=0.0.2"
+  domain = var.domain
+}
+
