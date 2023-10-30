@@ -1,6 +1,6 @@
 # Setup cloudbuild pipelines
 module "cloudbuild" {
-  source = "../../products//pipelines/cloudbuild"
+  source = "../pipelines/cloudbuild"
   count  = var.cloudbuild_pipelines != null ? 1 : 0
 
   project_control   = module.resources.projects[local.environment.project_control]
@@ -13,7 +13,7 @@ module "cloudbuild" {
 
 # Setup github action pipelines
 module "github" {
-  source = "../../products//pipelines/github"
+  source = "../pipelines/github"
   count  = var.github_pipelines != null ? 1 : 0
 
   project             = local.resources.projects[local.environment.project_control]
