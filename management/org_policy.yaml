@@ -1,8 +1,0 @@
-displayName: ${domain}
-orgPolicy:                                
-- name: compute.disableAllIpv6
-  spec:                                     
-    rules:
-    - enforce: true
-folders: []
-projects: []

@@ -38,30 +38,30 @@ locals {
 }
 
 module "guardrails_service_identity" {
-  source   = "github.com/gcp-foundation/modules//resources/service_identity?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//resources/service_identity?ref=v0.0.1"
   for_each = toset(local.guardrails_services)
-  project  = local.projects[local.environment.project_guardrails].project_id
+  project  = module.projects[var.project_guardrails].project_id
   service  = each.value
 }
 
 data "google_storage_project_service_account" "guardrails_gcs_account" {
-  project = local.projects[local.environment.project_guardrails].project_id
+  project = module.projects[var.project_guardrails].project_id
 }
 
 module "guardrails_kms_key" {
-  source        = "github.com/gcp-foundation/modules//kms/key?ref=0.0.1"
-  name          = local.projects[local.environment.project_guardrails].project_id
-  key_ring_name = local.projects[local.environment.project_guardrails].project_id
-  project       = local.projects[local.environment.project_guardrails].project_id
+  source        = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
+  name          = module.projects[var.project_guardrails].project_id
+  key_ring_name = module.projects[var.project_guardrails].project_id
+  project       = module.projects[var.project_guardrails].project_id
   location      = var.location
   encrypters    = local.guardrails_encrypters
   decrypters    = local.guardrails_encrypters
 }
 
 module "guardrails_storage" {
-  source              = "github.com/gcp-foundation/modules//storage/bucket?ref=0.0.1"
+  source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=v0.0.1"
   name                = "guardrails"
-  project             = local.projects[local.environment.project_guardrails].project_id
+  project             = module.projects[var.project_guardrails].project_id
   location            = var.location
   kms_key_id          = module.guardrails_kms_key.key_id
   data_classification = "code"
@@ -72,7 +72,7 @@ module "guardrails_storage" {
 data "archive_file" "guardrails_source" {
   type        = "zip"
   source_dir  = abspath("${path.module}/src/guardrails")
-  output_path = "/workspace/guardrails.zip"
+  output_path = "${path.module}/guardrails.zip"
 }
 
 resource "google_storage_bucket_object" "guardrails" {
@@ -82,11 +82,11 @@ resource "google_storage_bucket_object" "guardrails" {
 }
 
 module "guardrails_artifact_registry" {
-  source = "github.com/gcp-foundation/modules//devops/artifact_registry?ref=0.0.1"
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//devops/artifact_registry?ref=v0.0.1"
 
   name        = "guardrails"
   description = "Docker containers for guardrail cloudfunctions"
-  project     = local.projects[local.environment.project_guardrails].project_id
+  project     = module.projects[var.project_guardrails].project_id
   location    = var.location
 
   kms_key_id = module.guardrails_kms_key.key_id
@@ -95,20 +95,20 @@ module "guardrails_artifact_registry" {
 }
 
 module "guardrails_log_sink" {
-  source           = "github.com/gcp-foundation/modules//log_sink?ref=0.0.1"
+  source           = "github.com/XBankGCPOrg/gcp-lz-modules//log_sink?ref=v0.0.1"
   for_each         = local.log_sinks
   name             = "guardrail-${each.value.name}"
   org_id           = local.organization_id
   include_children = true
-  destination      = "pubsub.googleapis.com/projects/${local.projects[local.environment.project_guardrails].project_id}/topics/${module.guardrails_pubsub_log_topic[each.value.topic].name}"
+  destination      = "pubsub.googleapis.com/projects/${module.projects[var.project_guardrails].project_id}/topics/${module.guardrails_pubsub_log_topic[each.value.topic].name}"
   filter           = each.value.filter
 }
 
 module "guardrails_pubsub_log_topic" {
-  source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
+  source     = "github.com/XBankGCPOrg/gcp-lz-modules//pubsub/topic?ref=v0.0.1"
   for_each   = local.guardrails
   name       = "guardrail-${each.value.log_topic}"
-  project    = local.projects[local.environment.project_guardrails].project_id
+  project    = module.projects[var.project_guardrails].project_id
   kms_key_id = module.guardrails_kms_key.key_id
 
   depends_on = [module.guardrails_kms_key.encrypters]
@@ -116,26 +116,26 @@ module "guardrails_pubsub_log_topic" {
 
 resource "google_pubsub_topic_iam_member" "guardrails_pubsub_sink_member" {
   for_each = local.log_sinks
-  project  = local.projects[local.environment.project_guardrails].project_id
+  project  = module.projects[var.project_guardrails].project_id
   topic    = "guardrail-${each.value.topic}"
   role     = "roles/pubsub.publisher"
   member   = module.guardrails_log_sink[each.key].writer_identity
 }
 
 module "service_account" {
-  source   = "github.com/gcp-foundation/modules//iam/service_account?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/service_account?ref=v0.0.1"
   for_each = local.guardrails
 
   name         = "sa-guardrail-${each.value.name}"
   display_name = "Guardrail Service Account - ${each.value.name}"
   description  = "Service Account for ${each.value.name} guardrail"
-  project      = local.projects[local.environment.project_guardrails].project_id
+  project      = module.projects[var.project_guardrails].project_id
 }
 
 module "guardrails_cloudfunction" {
-  source   = "github.com/gcp-foundation/modules//compute/cloudfunction?ref=0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//compute/cloudfunction?ref=v0.0.1"
   for_each = local.guardrails
-  project  = local.projects[local.environment.project_guardrails].project_id
+  project  = module.projects[var.project_guardrails].project_id
   location = var.location
 
   name        = "guardrail-${each.value.name}"
@@ -160,9 +160,9 @@ module "guardrails_cloudfunction" {
 }
 
 module "guardrail_pubsub_topic_alerts" {
-  source     = "github.com/gcp-foundation/modules//pubsub/topic?ref=0.0.1"
+  source     = "github.com/XBankGCPOrg/gcp-lz-modules//pubsub/topic?ref=v0.0.1"
   name       = "guardrails-alert"
-  project    = local.projects[local.environment.project_guardrails].project_id
+  project    = module.projects[var.project_guardrails].project_id
   kms_key_id = module.guardrails_kms_key.key_id
 
   depends_on = [module.guardrails_kms_key.encrypters]

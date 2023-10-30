@@ -1,30 +1,36 @@
 resource "google_iam_workload_identity_pool" "github" {
+  for_each                  = { for sa in var.service_accounts.service_accounts : sa.name => sa }
   provider                  = google-beta
-  project                   = module.projects["devops/${local.environment.project_pipelines}"].project_id
-  workload_identity_pool_id = "github"
-  display_name              = "Github"
-  description               = "Github workload identity pool"
+  project                   = module.projects.project_id
+  workload_identity_pool_id = "github-${each.key}-pool"
+  display_name              = "Github-${each.key}-pool"
+  description               = "Github ${each.key} workload identity pool"
 }
 
 resource "google_iam_workload_identity_pool_provider" "github" {
   provider                           = google-beta
-  project                            = module.projects["devops/${local.environment.project_pipelines}"].project_id
-  workload_identity_pool_id          = google_iam_workload_identity_pool.github.workload_identity_pool_id
-  workload_identity_pool_provider_id = "github"
-  display_name                       = "Github"
-  description                        = "Github workload identity pool provider"
+  for_each                           = { for sa in var.service_accounts.service_accounts : sa.name => sa }
+  project                            = module.projects.project_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github[each.key].workload_identity_pool_id
+  workload_identity_pool_provider_id = "github-${each.key}-provider"
+  display_name                       = "Github-${each.key}-provider"
+  description                        = "Github ${each.key} workload identity pool provider"
   attribute_mapping = {
-    "google.subject"  = "assertion.sub"
-    "attribute.actor" = "assertion.actor"
-    "attribute.aud"   = "assertion.aud"
+    "google.subject"       = "assertion.sub"
+    "attribute.actor"      = "assertion.actor"
+    "attribute.aud"        = "assertion.aud"
+    "attribute.owner"      = "assertion.repository_owner"
+    "attribute.refs"       = "assertion.ref"
+    "attribute.repository" = "assertion.repository"
   }
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
   }
 }
 
-resource "google_service_account_iam_member" "workload_user" {
-  service_account_id = module.service_account["devops"].name
+resource "google_service_account_iam_member" "wif-sa-bind" {
+  for_each           = { for sa in var.service_accounts.service_accounts : sa.name => sa }
+  service_account_id = module.service_account[each.key].name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${module.projects["devops/${local.environment.project_pipelines}"].number}/locations/global/workloadIdentityPools/github/attribute.repository/gcp-foundation/bootstrap"
+  member             = "principalSet://iam.googleapis.com/projects/${module.projects.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github[each.key].workload_identity_pool_id}/attribute.repository/${each.value.repository}"
 }
