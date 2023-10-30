@@ -14,7 +14,7 @@ locals {
 module "devops_iam" {
   source = "github.com/gcp-foundation/modules//iam/policy?ref=0.0.2"
 
-  policy    = local.devops_policy
+  policy    = var.devops_policy
   members   = module.resources.service_accounts
   resources = local.resources
 
@@ -28,7 +28,7 @@ module "devops_iam" {
 module "management_iam" {
   source = "github.com/gcp-foundation/modules//iam/policy?ref=0.0.2"
 
-  policy    = local.management_policy
+  policy    = var.management_policy
   members   = module.resources.service_accounts
   resources = local.resources
 
