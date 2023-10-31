@@ -25,7 +25,7 @@ variable "foundation_hierarchy" {
       parent      = string
       services    = list(string)
       labels      = map(string)
-      lienReason  = bool
+      lienReason  = string
     }))
   })
 
