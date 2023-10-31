@@ -49,18 +49,19 @@ data "google_storage_project_service_account" "guardrails_gcs_account" {
 }
 
 module "guardrails_kms_key" {
-  source        = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
-  name          = module.projects[var.project_guardrails].project_id
-  key_ring_name = module.projects[var.project_guardrails].project_id
-  project       = module.projects[var.project_guardrails].project_id
-  location      = var.location
-  encrypters    = local.guardrails_encrypters
-  decrypters    = local.guardrails_encrypters
+  source          = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
+  name            = module.projects[var.project_guardrails].project_id
+  key_ring_name   = module.projects[var.project_guardrails].project_id
+  project         = module.projects[var.project_guardrails].project_id
+  location        = var.location
+  rotation_period = "7776000s" #key rotation is set to 90 days
+  encrypters      = local.guardrails_encrypters
+  decrypters      = local.guardrails_encrypters
 }
 
 module "guardrails_storage" {
   source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=v0.0.1"
-  name                = "guardrails"
+  name                = "bkt-${module.projects[var.project_guardrails].project_id}-guardrails"
   project             = module.projects[var.project_guardrails].project_id
   location            = var.location
   kms_key_id          = module.guardrails_kms_key.key_id

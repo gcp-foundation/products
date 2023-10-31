@@ -18,20 +18,21 @@ data "google_storage_project_service_account" "control_gcs_account" {
 }
 
 module "control_kms_key" {
-  source        = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=v0.0.1"
-  name          = module.projects.project_id
-  key_ring_name = module.projects.project_id
-  project       = module.projects.project_id
-  location      = var.location
-  encrypters    = local.control_encrypters
-  decrypters    = local.control_encrypters
+  source          = "github.com/XBankGCPOrg/gcp-lz-modules//kms/key?ref=main"
+  name            = module.projects.project_id
+  key_ring_name   = module.projects.project_id
+  project         = module.projects.project_id
+  rotation_period = "7776000s" #key rotation is set to 90 days
+  location        = var.location
+  encrypters      = local.control_encrypters
+  decrypters      = local.control_encrypters
 
   depends_on = [module.projects]
 }
 
 module "state_files" {
-  source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=v0.0.1"
-  name                = var.gcs_terraform_bucket_name
+  source              = "github.com/XBankGCPOrg/gcp-lz-modules//storage/bucket?ref=main"
+  name                = "bkt-${module.projects.project_id}-${var.gcs_terraform_bucket_name}"
   project             = module.projects.project_id
   location            = var.location
   data_classification = "terraform_state"
@@ -41,7 +42,7 @@ module "state_files" {
 }
 
 module "service_account" {
-  source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/service_account?ref=v0.0.1"
+  source   = "github.com/XBankGCPOrg/gcp-lz-modules//iam/service_account?ref=main"
   for_each = { for sa in var.service_accounts.service_accounts : sa.name => sa }
 
   name         = "sa-${each.value.name}"

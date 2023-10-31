@@ -1,5 +1,5 @@
 module "organization" {
-  source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/organization?ref=v0.0.1"
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/organization?ref=main"
 
   domain = var.domain
 }
@@ -12,7 +12,7 @@ module "folders" {
 }
 
 module "projects" {
-  source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/project?ref=v0.0.1"
+  source = "github.com/XBankGCPOrg/gcp-lz-modules//resources/project?ref=main"
 
   name            = var.seed_project_name
   folder          = module.folders.name
