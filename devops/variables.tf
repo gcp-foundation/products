@@ -44,12 +44,7 @@ variable "github_organization" {
   default     = null
 }
 
-variable "devops_policy" {
-  description = "The iam policy to apply to the devops service account"
-  default     = null
-}
-
-variable "management_policy" {
-  description = "The iam policy to apply to the management service account"
+variable "iam_policies" {
+  description = "A collection of iam policies to apply to the environmnet"
   default     = null
 }
