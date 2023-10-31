@@ -1,4 +1,7 @@
-# Setup cloudbuild pipelines
+###############################################################################
+# Create Cloudbuild pipelines (if required)
+###############################################################################
+
 module "cloudbuild" {
   source = "../pipelines/cloudbuild"
   count  = var.cloudbuild_pipelines != null ? 1 : 0
@@ -11,7 +14,10 @@ module "cloudbuild" {
   cloudbuild_sha    = var.cloudbuild_sha
 }
 
-# Setup github action pipelines
+###############################################################################
+# Create github actions pipelines (if required)
+###############################################################################
+
 module "github" {
   source = "../pipelines/github"
   count  = var.github_pipelines != null ? 1 : 0
