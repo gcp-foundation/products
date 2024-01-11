@@ -58,6 +58,7 @@ locals {
               terraform apply -input=false -auto-approve "$${plan_name}.tfplan" || exit 3 ;
             else 
               printf 'The plan file "%s" is different to "%s"\n' "$${plan_name}.tfplan" "0.0.2.tfplan"
+            fi
         EOT
       ]
     }
