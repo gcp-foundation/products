@@ -52,12 +52,12 @@ locals {
             echo "Applying Terraform"
             export plan_name=$BRANCH_NAME
 
-            gsutil cp "gs://${module.build_output.name}/terraform/cloudbuild/plans/0.0.2.tfplan" "0.0.2.tfplan"
-            if cmp -s "0.0.2.tfplan" "$${plan_name}.tfplan"; then
-              printf 'The plan file "%s" is identical to "%s"\n' "$${plan_name}.tfplan" "0.0.2.tfplan"
+            gsutil cp "gs://${module.build_output.name}/terraform/cloudbuild/plans/main.tfplan" "prev.tfplan"
+            if cmp -s "prev.tfplan" "$${plan_name}.tfplan"; then
+              printf 'The plan file "%s" is identical to "%s"\n' "$${plan_name}.tfplan" "prev.tfplan"
               terraform apply -input=false -auto-approve "$${plan_name}.tfplan" || exit 3 ;
             else 
-              printf 'The plan file "%s" is different to "%s"\n' "$${plan_name}.tfplan" "0.0.2.tfplan"
+              printf 'The plan file "%s" is different to "%s"\n' "$${plan_name}.tfplan" "prev.tfplan"
             fi
         EOT
       ]
