@@ -34,7 +34,7 @@ locals {
             echo "Planning Terraform"
             export plan_name=$BRANCH_NAME
             terraform plan -input=false -out "$${plan_name}.tfplan" || exit 2 ;
-            gsutil cp "${plan_name}.tfplan" "gs://${module.build_output.name}/terraform/cloudbuild/plans/${plan_name}.tfplan" 
+            gsutil cp "$${plan_name}.tfplan" "gs://$${module.build_output.name}/terraform/cloudbuild/plans/$${plan_name}.tfplan" 
         EOT
       ]
     }
